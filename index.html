@@ -201,7 +201,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.4.3</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.4.4</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -436,6 +436,27 @@
         </div>
       </div>
       <div class="settings-section">
+        <div class="settings-title">Période par défaut</div>
+        <div class="settings-card">
+          <p>Choisis la période affichée par défaut à chaque ouverture de l'app.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+            <button class="period-preset-btn" id="def-civil-btn" onclick="setDefaultPeriod('calendar')">📅 Année civile</button>
+            <button class="period-preset-btn" id="def-fiscal-btn" onclick="setDefaultPeriod('fiscal')">📊 Année fiscale</button>
+          </div>
+          <div class="form-row" id="def-custom-row" style="display:none;">
+            <div class="form-group">
+              <label>Début (MM-JJ)</label>
+              <input type="text" id="def-start-md" placeholder="10-01" maxlength="5"/>
+            </div>
+            <div class="form-group">
+              <label>Fin (MM-JJ)</label>
+              <input type="text" id="def-end-md" placeholder="09-30" maxlength="5"/>
+            </div>
+          </div>
+          <div id="def-period-status" style="font-size:12px;color:var(--green-light);margin-top:6px;min-height:16px;"></div>
+        </div>
+      </div>
+      <div class="settings-section">
         <div class="settings-title">Synchronisation</div>
         <div class="settings-card">
           <p>Les données sont synchronisées automatiquement à chaque modification.</p>
@@ -491,6 +512,95 @@ const PIE_COLORS=['#3b82f6','#f59e0b','#10b981','#ef4444','#a855f7','#14b8a6','#
 function loadConfig(){
   try{const c=JSON.parse(localStorage.getItem(CONF_KEY)||'{}');apiUrl=c.url||'';apiSecret=c.secret||'';
   if(apiUrl)document.getElementById('s-url').value=apiUrl;if(apiSecret)document.getElementById('s-secret').value=apiSecret;}catch(e){}
+}
+
+const PERIOD_KEY='facturation_period';
+
+function savePeriodConfig(type, startMD, endMD){
+  localStorage.setItem(PERIOD_KEY, JSON.stringify({type, startMD, endMD}));
+}
+
+function loadPeriodConfig(){
+  try{
+    const p=JSON.parse(localStorage.getItem(PERIOD_KEY)||'{}');
+    if(!p.type) return; // no saved period, use default calendar
+    const year=new Date().getFullYear();
+    if(p.type==='calendar'){
+      periodMode='calendar';
+      currentYear=year;
+    } else if(p.type==='fiscal'){
+      // fiscal: if current date is before end month-day, use year-1 as start
+      const now=new Date();
+      const startParts=(p.startMD||'10-01').split('-');
+      const startMonth=parseInt(startParts[0])-1;
+      const startDay=parseInt(startParts[1]);
+      const endParts=(p.endMD||'09-30').split('-');
+      const endMonth=parseInt(endParts[0])-1;
+      const endDay=parseInt(endParts[1]);
+      // determine start year
+      let startYear=year;
+      const fiscalStart=new Date(year, startMonth, startDay);
+      if(now < fiscalStart) startYear=year-1;
+      // end year
+      let endYear=endMonth < startMonth ? startYear+1 : startYear;
+      periodStart=new Date(startYear, startMonth, startDay, 0,0,0);
+      periodEnd=new Date(endYear, endMonth, endDay, 23,59,59);
+      periodMode='custom';
+    } else if(p.type==='custom'){
+      // same as fiscal but with saved MD values
+      const now=new Date();
+      const startParts=(p.startMD||'01-01').split('-');
+      const endParts=(p.endMD||'12-31').split('-');
+      const startMonth=parseInt(startParts[0])-1, startDay=parseInt(startParts[1]);
+      const endMonth=parseInt(endParts[0])-1, endDay=parseInt(endParts[1]);
+      let startYear=year;
+      const periodStartThisYear=new Date(year, startMonth, startDay);
+      if(now < periodStartThisYear) startYear=year-1;
+      let endYear=endMonth < startMonth ? startYear+1 : startYear;
+      periodStart=new Date(startYear, startMonth, startDay, 0,0,0);
+      periodEnd=new Date(endYear, endMonth, endDay, 23,59,59);
+      periodMode='custom';
+    }
+    // update settings UI
+    updateDefaultPeriodUI(p.type);
+  }catch(e){}
+}
+
+function setDefaultPeriod(type){
+  const year=new Date().getFullYear();
+  if(type==='calendar'){
+    periodMode='calendar'; currentYear=year;
+    savePeriodConfig('calendar','01-01','12-31');
+    document.getElementById('def-custom-row').style.display='none';
+    document.getElementById('def-period-status').textContent='✓ Année civile enregistrée (Jan → Déc)';
+  } else if(type==='fiscal'){
+    // default fiscal Oct->Sep
+    const now=new Date();
+    let startYear=year;
+    if(now < new Date(year,9,1)) startYear=year-1;
+    periodStart=new Date(startYear,9,1,0,0,0);
+    periodEnd=new Date(startYear+1,8,30,23,59,59);
+    periodMode='custom';
+    savePeriodConfig('fiscal','10-01','09-30');
+    document.getElementById('def-custom-row').style.display='none';
+    document.getElementById('def-period-status').textContent='✓ Année fiscale enregistrée (Oct → Sep)';
+  } else {
+    document.getElementById('def-custom-row').style.display='grid';
+    document.getElementById('def-period-status').textContent='';
+    return;
+  }
+  updatePeriodDisplay(); updateDashboard();
+  updateDefaultPeriodUI(type);
+  setTimeout(()=>{document.getElementById('def-period-status').textContent='';},3000);
+}
+
+function updateDefaultPeriodUI(type){
+  try{
+    document.getElementById('def-civil-btn').style.borderColor = type==='calendar' ? 'var(--blue)' : '';
+    document.getElementById('def-civil-btn').style.color = type==='calendar' ? 'var(--blue-light)' : '';
+    document.getElementById('def-fiscal-btn').style.borderColor = type==='fiscal' ? 'var(--blue)' : '';
+    document.getElementById('def-fiscal-btn').style.color = type==='fiscal' ? 'var(--blue-light)' : '';
+  }catch(e){}
 }
 function saveConfig(){
   apiUrl=document.getElementById('s-url').value.trim().replace(/\/$/,'');
@@ -969,7 +1079,7 @@ function renderAll(){
 // ── Init ──
 document.getElementById('f-date').valueAsDate=new Date();
 document.getElementById('year-display').textContent=currentYear;updatePeriodDisplay();
-loadConfig();loadLocal();refreshClientSelects();renderAll();
+loadConfig();loadPeriodConfig();loadLocal();refreshClientSelects();renderAll();
 if(apiUrl&&apiSecret)pullFromNas();
 
 if("serviceWorker" in navigator){
