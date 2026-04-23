@@ -184,6 +184,20 @@
     .conn-status { padding: 9px 11px; background: var(--bg3); border-radius: var(--radius); font-size: 12px; color: var(--text2); margin-top: 8px; display: none; }
 
     /* Modal */
+
+    /* Update banner */
+    .update-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: #1e293b; border-bottom: 1px solid rgba(59,130,246,0.4); padding: 12px 16px; display: none; max-width: 680px; margin: 0 auto; }
+    .update-banner.show { display: block; }
+    .update-title { font-size: 13px; font-weight: 700; color: var(--blue-light); margin-bottom: 3px; }
+    .update-notes { font-size: 11px; color: var(--text2); margin-bottom: 10px; line-height: 1.4; max-height: 60px; overflow-y: auto; }
+    .update-actions { display: flex; gap: 8px; }
+    .btn-update { height: 32px; background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 0 14px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-update-dismiss { height: 32px; background: var(--bg3); color: var(--text2); border: none; border-radius: 8px; padding: 0 14px; font-size: 12px; cursor: pointer; }
+    .update-progress { font-size: 11px; color: var(--blue-light); margin-top: 6px; display: none; }
+    .progress-bar-wrap { height: 4px; background: var(--bg3); border-radius: 2px; margin-top: 4px; }
+    .progress-bar { height: 4px; background: var(--blue); border-radius: 2px; width: 0%; transition: width 0.3s; }
+    .period-preset-btn { height: 38px; background: var(--bg3); border: 0.5px solid var(--border2); color: var(--text2); border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer; }
+    .period-preset-btn:hover { background: var(--blue-bg); border-color: var(--blue); color: var(--blue-light); }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
     .modal-backdrop.hidden { display: none; }
     .modal { background: var(--bg2); border-radius: 20px 20px 0 0; padding: 18px 20px 28px; width: 100%; max-width: 680px; border: 0.5px solid var(--border2); max-height: 90vh; overflow-y: auto; }
@@ -195,11 +209,26 @@
   </style>
 </head>
 <body>
+
+  <!-- Update banner (Electron only) -->
+  <div class="update-banner" id="update-banner">
+    <div class="update-title" id="update-title">🆕 Mise à jour disponible</div>
+    <div class="update-notes" id="update-notes"></div>
+    <div class="update-actions">
+      <button class="btn-update" id="btn-update-action" onclick="handleUpdateBtn()">Télécharger</button>
+      <button class="btn-update-dismiss" onclick="dismissUpdate()">Plus tard</button>
+    </div>
+    <div class="update-progress" id="update-progress-wrap">
+      <span id="update-pct">0%</span>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+    </div>
+  </div>
+
 <div class="app">
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.4.1</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.4.4</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -207,9 +236,9 @@
       </div>
       <div class="header-controls">
         <div class="year-nav">
-          <button class="year-btn" onclick="changeYear(-1)">←</button>
-          <span id="year-display">2025</span>
-          <button class="year-btn" onclick="changeYear(1)">→</button>
+          <button class="year-btn" onclick="changePeriod(-1)">←</button>
+          <span id="year-display" onclick="openPeriodModal()" style="cursor:pointer;border-bottom:1px dashed var(--text3);">2025</span>
+          <button class="year-btn" onclick="changePeriod(1)">→</button>
         </div>
         <div class="mode-pill">
           <button class="active" onclick="setMode('HT',this)">HT</button>
@@ -240,6 +269,33 @@
     </div>
     <div class="chart-wrap">
       <canvas id="mainChart" role="img" aria-label="Graphique mensuel">Données mensuelles.</canvas>
+    </div>
+  </div>
+
+
+  <!-- Modal période -->
+  <div class="modal-backdrop hidden" id="modal-period" onclick="closeModalBg(event,'modal-period')">
+    <div class="modal">
+      <div class="modal-title">Choisir la période</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+        <button class="period-preset-btn" onclick="setPeriodPreset('calendar')">📅 Année civile</button>
+        <button class="period-preset-btn" onclick="setPeriodPreset('fiscal')">📊 Année fiscale</button>
+      </div>
+      <div id="period-type-display" style="font-size:12px;color:var(--text3);margin-bottom:12px;"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date de début</label>
+          <input type="date" id="p-start"/>
+        </div>
+        <div class="form-group">
+          <label>Date de fin</label>
+          <input type="date" id="p-end"/>
+        </div>
+      </div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModal('modal-period')">Annuler</button>
+        <button class="btn-confirm" onclick="applyPeriod()">Appliquer</button>
+      </div>
     </div>
   </div>
 
@@ -407,6 +463,27 @@
         </div>
       </div>
       <div class="settings-section">
+        <div class="settings-title">Période par défaut</div>
+        <div class="settings-card">
+          <p>Choisis la période affichée par défaut à chaque ouverture de l'app.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+            <button class="period-preset-btn" id="def-civil-btn" onclick="setDefaultPeriod('calendar')">📅 Année civile</button>
+            <button class="period-preset-btn" id="def-fiscal-btn" onclick="setDefaultPeriod('fiscal')">📊 Année fiscale</button>
+          </div>
+          <div class="form-row" id="def-custom-row" style="display:none;">
+            <div class="form-group">
+              <label>Début (MM-JJ)</label>
+              <input type="text" id="def-start-md" placeholder="10-01" maxlength="5"/>
+            </div>
+            <div class="form-group">
+              <label>Fin (MM-JJ)</label>
+              <input type="text" id="def-end-md" placeholder="09-30" maxlength="5"/>
+            </div>
+          </div>
+          <div id="def-period-status" style="font-size:12px;color:var(--green-light);margin-top:6px;min-height:16px;"></div>
+        </div>
+      </div>
+      <div class="settings-section">
         <div class="settings-title">Synchronisation</div>
         <div class="settings-card">
           <p>Les données sont synchronisées automatiquement à chaque modification.</p>
@@ -443,6 +520,8 @@
 <script>
 let entries=[], clients=[];
 let mode='HT', currentYear=new Date().getFullYear();
+let periodMode='calendar'; // 'calendar' or 'custom'
+let periodStart=null, periodEnd=null; // custom period dates
 let selectedStatus='valide', editStatus='valide';
 let editId=null, editClientId=null;
 let mainChart=null, pieChart=null;
@@ -460,6 +539,95 @@ const PIE_COLORS=['#3b82f6','#f59e0b','#10b981','#ef4444','#a855f7','#14b8a6','#
 function loadConfig(){
   try{const c=JSON.parse(localStorage.getItem(CONF_KEY)||'{}');apiUrl=c.url||'';apiSecret=c.secret||'';
   if(apiUrl)document.getElementById('s-url').value=apiUrl;if(apiSecret)document.getElementById('s-secret').value=apiSecret;}catch(e){}
+}
+
+const PERIOD_KEY='facturation_period';
+
+function savePeriodConfig(type, startMD, endMD){
+  localStorage.setItem(PERIOD_KEY, JSON.stringify({type, startMD, endMD}));
+}
+
+function loadPeriodConfig(){
+  try{
+    const p=JSON.parse(localStorage.getItem(PERIOD_KEY)||'{}');
+    if(!p.type) return; // no saved period, use default calendar
+    const year=new Date().getFullYear();
+    if(p.type==='calendar'){
+      periodMode='calendar';
+      currentYear=year;
+    } else if(p.type==='fiscal'){
+      // fiscal: if current date is before end month-day, use year-1 as start
+      const now=new Date();
+      const startParts=(p.startMD||'10-01').split('-');
+      const startMonth=parseInt(startParts[0])-1;
+      const startDay=parseInt(startParts[1]);
+      const endParts=(p.endMD||'09-30').split('-');
+      const endMonth=parseInt(endParts[0])-1;
+      const endDay=parseInt(endParts[1]);
+      // determine start year
+      let startYear=year;
+      const fiscalStart=new Date(year, startMonth, startDay);
+      if(now < fiscalStart) startYear=year-1;
+      // end year
+      let endYear=endMonth < startMonth ? startYear+1 : startYear;
+      periodStart=new Date(startYear, startMonth, startDay, 0,0,0);
+      periodEnd=new Date(endYear, endMonth, endDay, 23,59,59);
+      periodMode='custom';
+    } else if(p.type==='custom'){
+      // same as fiscal but with saved MD values
+      const now=new Date();
+      const startParts=(p.startMD||'01-01').split('-');
+      const endParts=(p.endMD||'12-31').split('-');
+      const startMonth=parseInt(startParts[0])-1, startDay=parseInt(startParts[1]);
+      const endMonth=parseInt(endParts[0])-1, endDay=parseInt(endParts[1]);
+      let startYear=year;
+      const periodStartThisYear=new Date(year, startMonth, startDay);
+      if(now < periodStartThisYear) startYear=year-1;
+      let endYear=endMonth < startMonth ? startYear+1 : startYear;
+      periodStart=new Date(startYear, startMonth, startDay, 0,0,0);
+      periodEnd=new Date(endYear, endMonth, endDay, 23,59,59);
+      periodMode='custom';
+    }
+    // update settings UI
+    updateDefaultPeriodUI(p.type);
+  }catch(e){}
+}
+
+function setDefaultPeriod(type){
+  const year=new Date().getFullYear();
+  if(type==='calendar'){
+    periodMode='calendar'; currentYear=year;
+    savePeriodConfig('calendar','01-01','12-31');
+    document.getElementById('def-custom-row').style.display='none';
+    document.getElementById('def-period-status').textContent='✓ Année civile enregistrée (Jan → Déc)';
+  } else if(type==='fiscal'){
+    // default fiscal Oct->Sep
+    const now=new Date();
+    let startYear=year;
+    if(now < new Date(year,9,1)) startYear=year-1;
+    periodStart=new Date(startYear,9,1,0,0,0);
+    periodEnd=new Date(startYear+1,8,30,23,59,59);
+    periodMode='custom';
+    savePeriodConfig('fiscal','10-01','09-30');
+    document.getElementById('def-custom-row').style.display='none';
+    document.getElementById('def-period-status').textContent='✓ Année fiscale enregistrée (Oct → Sep)';
+  } else {
+    document.getElementById('def-custom-row').style.display='grid';
+    document.getElementById('def-period-status').textContent='';
+    return;
+  }
+  updatePeriodDisplay(); updateDashboard();
+  updateDefaultPeriodUI(type);
+  setTimeout(()=>{document.getElementById('def-period-status').textContent='';},3000);
+}
+
+function updateDefaultPeriodUI(type){
+  try{
+    document.getElementById('def-civil-btn').style.borderColor = type==='calendar' ? 'var(--blue)' : '';
+    document.getElementById('def-civil-btn').style.color = type==='calendar' ? 'var(--blue-light)' : '';
+    document.getElementById('def-fiscal-btn').style.borderColor = type==='fiscal' ? 'var(--blue)' : '';
+    document.getElementById('def-fiscal-btn').style.color = type==='fiscal' ? 'var(--blue-light)' : '';
+  }catch(e){}
 }
 function saveConfig(){
   apiUrl=document.getElementById('s-url').value.trim().replace(/\/$/,'');
@@ -504,7 +672,84 @@ function showPanel(id){
   if(id==='paye')renderPaye();
 }
 
-function changeYear(d){currentYear+=d;document.getElementById('year-display').textContent=currentYear;updateDashboard();}
+function changePeriod(d){
+  if(periodMode==='custom'){
+    // shift custom period by same duration
+    const ms=periodEnd-periodStart;
+    const shift=d*(ms+86400000);
+    periodStart=new Date(periodStart.getTime()+shift);
+    periodEnd=new Date(periodEnd.getTime()+shift);
+    updatePeriodDisplay();updateDashboard();return;
+  }
+  currentYear+=d;updatePeriodDisplay();updateDashboard();
+}
+function changeYear(d){changePeriod(d);}
+
+function openPeriodModal(){
+  if(periodMode==='custom'&&periodStart&&periodEnd){
+    document.getElementById('p-start').value=periodStart.toISOString().slice(0,10);
+    document.getElementById('p-end').value=periodEnd.toISOString().slice(0,10);
+  } else {
+    document.getElementById('p-start').value=currentYear+'-01-01';
+    document.getElementById('p-end').value=currentYear+'-12-31';
+  }
+  updatePeriodTypeDisplay();
+  document.getElementById('modal-period').classList.remove('hidden');
+}
+
+function setPeriodPreset(type){
+  if(type==='calendar'){
+    document.getElementById('p-start').value=currentYear+'-01-01';
+    document.getElementById('p-end').value=currentYear+'-12-31';
+  } else {
+    // fiscal: 1 oct N -> 30 sept N+1
+    document.getElementById('p-start').value=currentYear+'-10-01';
+    document.getElementById('p-end').value=(currentYear+1)+'-09-30';
+  }
+  updatePeriodTypeDisplay();
+}
+
+function updatePeriodTypeDisplay(){
+  const s=document.getElementById('p-start').value;
+  const e=document.getElementById('p-end').value;
+  const el=document.getElementById('period-type-display');
+  if(s&&e){
+    const sd=new Date(s),ed=new Date(e);
+    el.textContent='Période : '+sd.toLocaleDateString('fr-FR')+' → '+ed.toLocaleDateString('fr-FR');
+  }
+}
+
+function applyPeriod(){
+  const s=document.getElementById('p-start').value;
+  const e=document.getElementById('p-end').value;
+  if(!s||!e)return;
+  periodStart=new Date(s+'T00:00:00');
+  periodEnd=new Date(e+'T23:59:59');
+  periodMode='custom';
+  updatePeriodDisplay();
+  updateDashboard();
+  closeModal('modal-period');
+}
+
+function updatePeriodDisplay(){
+  const el=document.getElementById('year-display');
+  if(periodMode==='custom'&&periodStart&&periodEnd){
+    const sy=periodStart.getFullYear(),ey=periodEnd.getFullYear();
+    const sm=String(periodStart.getMonth()+1).padStart(2,'0');
+    const em=String(periodEnd.getMonth()+1).padStart(2,'0');
+    if(sy===ey) el.textContent=sy;
+    else el.textContent=sy+'/'+String(ey).slice(2);
+  } else {
+    el.textContent=currentYear;
+  }
+}
+
+function getFilteredEntries(){
+  if(periodMode==='custom'&&periodStart&&periodEnd){
+    return entries.filter(e=>{const d=new Date(e.date+'T12:00:00');return d>=periodStart&&d<=periodEnd;});
+  }
+  return entries.filter(e=>new Date(e.date).getFullYear()===currentYear);
+}
 function setMode(m){mode=m;document.querySelectorAll('.mode-pill button').forEach(b=>b.classList.toggle('active',b.textContent===m));renderAll();}
 function setStatsMode(m,el){statsMode=m;document.querySelectorAll('.stats-toggle button').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderStats();}
 function selectStatus(s){selectedStatus=s;document.getElementById('btn-valide').className='status-btn'+(s==='valide'?' sel-valide':'');document.getElementById('btn-option').className='status-btn'+(s==='option'?' sel-option':'');}
@@ -576,7 +821,7 @@ function renderDayDetail(){
 function renderPaye(){
   const yr=entries.filter(e=>e.status==='paye'&&new Date(e.date).getFullYear()===currentYear);
   const total=yr.reduce((a,e)=>a+getVal(e),0);
-  document.getElementById('paye-year').textContent=currentYear;
+  document.getElementById('paye-year').textContent=periodMode==='custom'&&periodStart&&periodEnd?periodStart.toLocaleDateString('fr-FR')+' — '+periodEnd.toLocaleDateString('fr-FR'):currentYear;
   document.getElementById('paye-total').textContent=fmt(total);
   const el=document.getElementById('paye-list');
   if(!yr.length){el.innerHTML='<div class="empty-state"><div style="font-size:2rem;">✅</div><p>Aucune prestation payée.</p></div>';return;}
@@ -739,7 +984,7 @@ function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').toUpperCase
 // Option = status option | Net+opt = (Validés+Options) - (ST validés + ST options)
 // Payé = status paye (CA encaissé)
 function updateDashboard(){
-  const yr=entries.filter(e=>new Date(e.date).getFullYear()===currentYear);
+  const yr=getFilteredEntries();
   const valide=yr.filter(e=>e.status==='valide');
   const option=yr.filter(e=>e.status==='option');
   const paye=yr.filter(e=>e.status==='paye');
@@ -758,19 +1003,45 @@ function updateDashboard(){
   document.getElementById('m-net-valide').textContent=fmt(netV);
   document.getElementById('m-net-opt').textContent=fmt(netOpt);
 
-  const dataV=Array(12).fill(0),dataO=Array(12).fill(0),dataP=Array(12).fill(0),dataST=Array(12).fill(0);
-  yr.forEach(e=>{
-    const m=new Date(e.date).getMonth();
-    if(e.status==='valide')dataV[m]+=getVal(e);
-    else if(e.status==='option')dataO[m]+=getVal(e);
-    else if(e.status==='paye')dataP[m]+=getVal(e);
-    dataST[m]+=getSubVal(e);
-  });
+  // Build chart labels and data based on period
+  let chartLabels, dataV, dataO, dataP, dataST;
+  if(periodMode==='custom'&&periodStart&&periodEnd){
+    // Generate month-by-month labels for the custom period
+    chartLabels=[]; dataV=[]; dataO=[]; dataP=[]; dataST=[];
+    let cur=new Date(periodStart.getFullYear(),periodStart.getMonth(),1);
+    const endMonth=new Date(periodEnd.getFullYear(),periodEnd.getMonth(),1);
+    while(cur<=endMonth){
+      const label=MONTHS[cur.getMonth()]+(cur.getFullYear()!==periodStart.getFullYear()&&cur.getMonth()===0?'\n'+cur.getFullYear():'');
+      chartLabels.push(MONTHS[cur.getMonth()]+' '+String(cur.getFullYear()).slice(2));
+      dataV.push(0);dataO.push(0);dataP.push(0);dataST.push(0);
+      cur.setMonth(cur.getMonth()+1);
+    }
+    yr.forEach(e=>{
+      const d=new Date(e.date+'T12:00:00');
+      const idx=(d.getFullYear()-periodStart.getFullYear())*12+(d.getMonth()-periodStart.getMonth());
+      if(idx>=0&&idx<chartLabels.length){
+        if(e.status==='valide')dataV[idx]+=getVal(e);
+        else if(e.status==='option')dataO[idx]+=getVal(e);
+        else if(e.status==='paye')dataP[idx]+=getVal(e);
+        dataST[idx]+=getSubVal(e);
+      }
+    });
+  } else {
+    chartLabels=MONTHS;
+    dataV=Array(12).fill(0);dataO=Array(12).fill(0);dataP=Array(12).fill(0);dataST=Array(12).fill(0);
+    yr.forEach(e=>{
+      const m=new Date(e.date).getMonth();
+      if(e.status==='valide')dataV[m]+=getVal(e);
+      else if(e.status==='option')dataO[m]+=getVal(e);
+      else if(e.status==='paye')dataP[m]+=getVal(e);
+      dataST[m]+=getSubVal(e);
+    });
+  }
   const dataNetV=dataV.map((v,i)=>v-dataST[i]);
 
   if(mainChart)mainChart.destroy();
   mainChart=new Chart(document.getElementById('mainChart'),{type:'bar',
-    data:{labels:MONTHS,datasets:[
+    data:{labels:chartLabels,datasets:[
       {type:'bar',label:'Validé',data:dataV,backgroundColor:'#3b82f6',borderRadius:3,borderSkipped:false,order:2},
       {type:'bar',label:'Option',data:dataO,backgroundColor:'#f59e0b',borderRadius:3,borderSkipped:false,order:2},
       {type:'bar',label:'Payé',data:dataP,backgroundColor:'#059669',borderRadius:3,borderSkipped:false,order:2},
@@ -803,7 +1074,7 @@ function renderClients(){
 }
 
 function renderStats(){
-  const yr=entries.filter(e=>new Date(e.date).getFullYear()===currentYear);
+  const yr=getFilteredEntries();
   const filtered=yr.filter(e=>e.status===statsMode);
   const byClient={};
   filtered.forEach(e=>{const n=getClientName(e);if(!byClient[n])byClient[n]=0;byClient[n]+=getVal(e);});
@@ -834,9 +1105,59 @@ function renderAll(){
 
 // ── Init ──
 document.getElementById('f-date').valueAsDate=new Date();
-document.getElementById('year-display').textContent=currentYear;
-loadConfig();loadLocal();refreshClientSelects();renderAll();
+document.getElementById('year-display').textContent=currentYear;updatePeriodDisplay();
+loadConfig();loadPeriodConfig();loadLocal();refreshClientSelects();renderAll();
 if(apiUrl&&apiSecret)pullFromNas();
+
+
+// ── Electron auto-updater ──
+let updateReady = false;
+
+if (window.electronAPI) {
+  window.electronAPI.onUpdateAvailable((data) => {
+    document.getElementById('update-title').textContent = '🆕 Mise à jour v' + data.version + ' disponible';
+    // Strip HTML tags from release notes
+    const notes = typeof data.releaseNotes === 'string'
+      ? data.releaseNotes.replace(/<[^>]*>/g, '').trim()
+      : 'Améliorations et corrections.';
+    document.getElementById('update-notes').textContent = notes;
+    document.getElementById('update-banner').classList.add('show');
+    // Push app content down
+    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
+  });
+
+  window.electronAPI.onUpdateProgress((pct) => {
+    document.getElementById('update-progress-wrap').style.display = 'block';
+    document.getElementById('update-pct').textContent = pct + '%';
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('btn-update-action').disabled = true;
+    document.getElementById('btn-update-action').textContent = 'Téléchargement...';
+    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
+  });
+
+  window.electronAPI.onUpdateDownloaded(() => {
+    updateReady = true;
+    document.getElementById('update-title').textContent = '✅ Mise à jour prête à installer';
+    document.getElementById('update-notes').textContent = 'L'app va se relancer automatiquement.';
+    document.getElementById('update-progress-wrap').style.display = 'none';
+    document.getElementById('btn-update-action').disabled = false;
+    document.getElementById('btn-update-action').textContent = 'Installer maintenant';
+    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
+  });
+}
+
+function handleUpdateBtn() {
+  if (updateReady) {
+    window.electronAPI.installUpdate();
+  } else {
+    window.electronAPI.downloadUpdate();
+  }
+}
+
+function dismissUpdate() {
+  document.getElementById('update-banner').classList.remove('show');
+  document.querySelector('.app').style.marginTop = '0';
+}
 
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("./sw.js").then(reg=>{

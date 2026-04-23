@@ -1,15 +1,20 @@
 {
   "name": "factu-app",
-  "version": "1.4.1",
+  "version": "1.4.4",
   "description": "Facturation - Jour And Light",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win --publish never"
+    "dist": "electron-builder --win --publish always"
   },
   "build": {
     "appId": "fr.jourandlight.factuapp",
     "productName": "factu.app",
+    "publish": {
+      "provider": "github",
+      "owner": "cyriljourdaine-cell",
+      "repo": "factu-app-desktop"
+    },
     "win": {
       "target": "nsis",
       "icon": "src/icon.ico"
@@ -25,6 +30,9 @@
       "src/**/*",
       "package.json"
     ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.0"
   },
   "devDependencies": {
     "electron": "^29.0.0",
