@@ -44,8 +44,6 @@
     .mode-pill { display: flex; background: var(--bg2); border-radius: 20px; padding: 2px; gap: 2px; border: 0.5px solid var(--border); }
     .mode-pill button { padding: 2px 9px; border: none; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: transparent; color: var(--text2); }
     .mode-pill button.active { background: var(--blue); color: #fff; }
-
-    /* Metrics - 5 cases */
     .metrics { display: grid; grid-template-columns: repeat(3, 1fr) 1.3fr; grid-template-rows: auto auto; gap: 5px; padding: 8px 20px; }
     .metric-paye { grid-row: 1 / 3 !important; background: rgba(5,150,105,0.1) !important; border-color: rgba(5,150,105,0.3) !important; display: flex; flex-direction: column; justify-content: center; }
     .metric-paye .metric-value { font-size: 16px !important; }
@@ -58,24 +56,19 @@
     .metric-value.green { color: var(--green-light); }
     .metric-value.teal { color: var(--teal-light); }
     .metric-value.emerald { color: var(--emerald-light); }
-
     .chart-section { padding: 0 20px 4px; }
     .chart-legend { display: flex; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
     .legend-item { display: flex; align-items: center; gap: 3px; font-size: 9px; color: var(--text2); }
     .legend-dot { width: 7px; height: 7px; border-radius: 2px; }
     .legend-line { width: 14px; height: 2px; border-radius: 1px; }
     .chart-wrap { position: relative; height: 130px; }
-
-    /* Tabs - 6 onglets */
     .tabs { display: flex; border-top: 0.5px solid var(--border); background: var(--bg); }
     .tab { flex: 1; padding: 7px 2px 5px; background: none; border: none; color: var(--text3); cursor: pointer; font-size: 9px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
     .tab svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; }
     .tab.active { color: var(--blue); }
-
     .panels { flex: 1; overflow: hidden; }
     .panel { display: none; height: 100%; overflow-y: auto; padding: 12px 20px; }
     .panel.active { display: block; }
-
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
     .form-group { display: flex; flex-direction: column; gap: 4px; }
     .form-group.full { grid-column: 1 / -1; }
@@ -84,7 +77,6 @@
     input::placeholder { color: var(--text3); }
     input:focus, select:focus { outline: none; border-color: var(--blue); }
     select option { background: var(--bg2); }
-
     .status-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
     .status-btn { height: 44px; border-radius: var(--radius); border: 1.5px solid var(--border2); background: var(--bg2); color: var(--text2); font-size: 13px; font-weight: 600; cursor: pointer; }
     .status-btn.sel-valide { border-color: var(--blue); background: var(--blue-bg); color: var(--blue-light); }
@@ -94,8 +86,6 @@
     .msg { text-align: center; font-size: 12px; min-height: 18px; margin-top: 6px; }
     .msg.ok { color: var(--green); }
     .msg.err { color: #f87171; }
-
-    /* Calendar */
     .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
     .cal-title { font-size: 14px; font-weight: 700; }
     .cal-nav { display: flex; gap: 4px; }
@@ -104,7 +94,7 @@
     .cal-filter select { width: 100%; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
     .cal-dow { text-align: center; font-size: 9px; font-weight: 600; color: var(--text3); text-transform: uppercase; padding: 4px 0; }
-    .cal-day { min-height: 50px; background: var(--bg2); border-radius: 6px; border: 0.5px solid var(--border); padding: 3px; cursor: pointer; }
+    .cal-day { min-height: 50px; background: var(--bg2); border-radius: 6px; border: 0.5px solid var(--border); padding: 3px; cursor: pointer; position: relative; }
     .cal-day.other-month { opacity: 0.3; }
     .cal-day.today { border-color: var(--blue); }
     .cal-day.selected { border-color: var(--green); }
@@ -130,15 +120,11 @@
     .day-btn.edit { background: var(--blue-bg); color: var(--blue-light); border: 0.5px solid rgba(59,130,246,0.3); }
     .day-btn.del { background: var(--red-bg); color: var(--red-light); border: 0.5px solid rgba(239,68,68,0.2); }
     .day-btn.unpaid { background: var(--amber-bg); color: var(--amber-light); border: 0.5px solid rgba(245,158,11,0.3); }
-
-    /* Payé panel */
-
     .liste-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
     .liste-tab { flex: 1; height: 34px; border: 0.5px solid var(--border2); background: var(--bg2); color: var(--text2); border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
     .liste-tab.active.paye { background: var(--emerald-bg); border-color: rgba(5,150,105,0.4); color: var(--emerald-light); }
     .liste-tab.active.valide { background: var(--blue-bg); border-color: rgba(59,130,246,0.4); color: var(--blue-light); }
     .liste-tab.active.option { background: var(--amber-bg); border-color: rgba(245,158,11,0.4); color: var(--amber-light); }
-    .paid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .paid-total { background: var(--emerald-bg); border: 0.5px solid rgba(5,150,105,0.3); border-radius: 8px; padding: 8px 14px; margin-bottom: 12px; }
     .paid-total-label { font-size: 10px; color: var(--emerald-light); text-transform: uppercase; letter-spacing: 0.05em; }
     .paid-total-value { font-size: 20px; font-weight: 700; color: var(--emerald-light); }
@@ -154,8 +140,6 @@
     .btn-unpaid { flex: 1; height: 28px; background: var(--amber-bg); border: 0.5px solid rgba(245,158,11,0.3); color: var(--amber-light); border-radius: 7px; font-size: 11px; font-weight: 600; cursor: pointer; }
     .btn-paid-edit { flex: 1; height: 28px; background: var(--blue-bg); border: 0.5px solid rgba(59,130,246,0.3); color: var(--blue-light); border-radius: 7px; font-size: 11px; font-weight: 600; cursor: pointer; }
     .btn-paid-del { flex: 1; height: 28px; background: var(--red-bg); border: 0.5px solid rgba(239,68,68,0.2); color: var(--red-light); border-radius: 7px; font-size: 11px; font-weight: 600; cursor: pointer; }
-
-    /* Clients */
     .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .section-title { font-size: 13px; font-weight: 600; color: var(--text2); }
     .btn-add-client { height: 32px; background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 0 14px; font-size: 12px; font-weight: 600; cursor: pointer; }
@@ -167,8 +151,6 @@
     .client-actions { display: flex; gap: 5px; }
     .btn-client-edit { height: 28px; width: 28px; background: var(--blue-bg); border: 0.5px solid rgba(59,130,246,0.3); color: var(--blue-light); border-radius: 6px; font-size: 12px; cursor: pointer; }
     .btn-client-del { height: 28px; width: 28px; background: var(--red-bg); border: 0.5px solid rgba(239,68,68,0.2); color: var(--red-light); border-radius: 6px; font-size: 12px; cursor: pointer; }
-
-    /* Stats */
     .stats-toggle { display: flex; background: var(--bg2); border-radius: 20px; padding: 2px; gap: 2px; border: 0.5px solid var(--border); margin-bottom: 12px; width: fit-content; }
     .stats-toggle button { padding: 5px 16px; border: none; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer; background: transparent; color: var(--text2); }
     .stats-toggle button.active { background: var(--blue); color: #fff; }
@@ -180,8 +162,6 @@
     .client-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
     .empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--text3); }
     .empty-state p { margin-top: 6px; font-size: 13px; }
-
-    /* Settings */
     .settings-section { margin-bottom: 16px; }
     .settings-title { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
     .settings-card { background: var(--bg2); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 14px; }
@@ -190,8 +170,6 @@
     .btn-save { width: 100%; height: 42px; background: var(--blue); color: #fff; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 600; cursor: pointer; }
     .btn-secondary { width: 100%; height: 42px; background: transparent; border: 0.5px solid var(--border2); color: var(--text2); border-radius: var(--radius); font-size: 13px; cursor: pointer; margin-top: 7px; }
     .conn-status { padding: 9px 11px; background: var(--bg3); border-radius: var(--radius); font-size: 12px; color: var(--text2); margin-top: 8px; display: none; }
-
-    /* Modal */
     .period-preset-btn { height: 38px; background: var(--bg3); border: 0.5px solid var(--border2); color: var(--text2); border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer; }
     .period-preset-btn:hover { background: var(--blue-bg); border-color: var(--blue); color: var(--blue-light); }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
@@ -202,27 +180,33 @@
     .modal-btns button { height: 44px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
     .btn-cancel { background: var(--bg3); color: var(--text2); }
     .btn-confirm { background: var(--blue); color: #fff; }
-
-    .update-banner{position:fixed;top:0;left:0;right:0;z-index:200;background:#1e293b;border-bottom:1px solid rgba(59,130,246,0.4);padding:12px 16px;display:none}
-    .update-banner.show{display:block}
-    .update-header{font-size:13px;font-weight:700;color:#93c5fd;margin-bottom:3px}
-    .update-notes{font-size:11px;color:#94a3b8;margin-bottom:10px;line-height:1.4;max-height:50px;overflow-y:auto}
-    .update-actions{display:flex;gap:8px}
-    .btn-update{height:30px;background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:0 14px;font-size:12px;font-weight:600;cursor:pointer}
-    .btn-update-later{height:30px;background:#334155;color:#94a3b8;border:none;border-radius:8px;padding:0 14px;font-size:12px;cursor:pointer}
-    .update-prog{font-size:11px;color:#93c5fd;margin-top:6px;display:none}
-    .prog-bar-bg{height:4px;background:#334155;border-radius:2px;margin-top:4px}
-    .prog-bar{height:4px;background:#3b82f6;border-radius:2px;width:0%;transition:width 0.3s}
+    .update-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: #1e293b; border-bottom: 1px solid rgba(59,130,246,0.4); padding: 12px 16px; display: none; }
+    .update-banner.show { display: block; }
+    .update-header { font-size: 13px; font-weight: 700; color: #93c5fd; margin-bottom: 3px; }
+    .update-notes { font-size: 11px; color: #94a3b8; margin-bottom: 10px; line-height: 1.4; max-height: 50px; overflow-y: auto; }
+    .update-actions { display: flex; gap: 8px; }
+    .btn-update { height: 30px; background: #3b82f6; color: #fff; border: none; border-radius: 8px; padding: 0 14px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-update-later { height: 30px; background: #334155; color: #94a3b8; border: none; border-radius: 8px; padding: 0 14px; font-size: 12px; cursor: pointer; }
+    .update-prog { font-size: 11px; color: #93c5fd; margin-top: 6px; display: none; }
+    .prog-bar-bg { height: 4px; background: #334155; border-radius: 2px; margin-top: 4px; }
+    .prog-bar { height: 4px; background: #3b82f6; border-radius: 2px; width: 0%; transition: width 0.3s; }
   </style>
 </head>
 <body>
-
-  <div class="update-banner" id="upd-banner"><div class="update-header" id="upd-title">Mise a jour disponible</div><div class="update-notes" id="upd-notes"></div><div class="update-actions"><button class="btn-update" id="upd-btn" onclick="updBtn()">Telecharger</button><button class="btn-update-later" onclick="updDismiss()">Plus tard</button></div><div class="update-prog" id="upd-prog"><span id="upd-pct">0%</span><div class="prog-bar-bg"><div class="prog-bar" id="upd-bar"></div></div></div></div>
+  <div class="update-banner" id="upd-banner">
+    <div class="update-header" id="upd-title">Mise a jour disponible</div>
+    <div class="update-notes" id="upd-notes"></div>
+    <div class="update-actions">
+      <button class="btn-update" id="upd-btn" onclick="updBtn()">Telecharger</button>
+      <button class="btn-update-later" onclick="updDismiss()">Plus tard</button>
+    </div>
+    <div class="update-prog" id="upd-prog"><span id="upd-pct">0%</span><div class="prog-bar-bg"><div class="prog-bar" id="upd-bar"></div></div></div>
+  </div>
 <div class="app">
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.6.9</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.0</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -242,7 +226,6 @@
     </div>
   </header>
 
-  <!-- 5 métriques : Validé / Option / Payé / Net validé / Net avec opt -->
   <div class="metrics">
     <div class="metric"><div class="metric-label">Validé</div><div class="metric-value blue" id="m-valide">0 €</div></div>
     <div class="metric"><div class="metric-label">ST Validé</div><div class="metric-value red" id="m-st-valide">0 €</div></div>
@@ -266,8 +249,6 @@
     </div>
   </div>
 
-
-  <!-- Modal période -->
   <div class="modal-backdrop hidden" id="modal-period" onclick="closeModalBg(event,'modal-period')">
     <div class="modal">
       <div class="modal-title">Choisir la période</div>
@@ -277,14 +258,8 @@
       </div>
       <div id="period-type-display" style="font-size:12px;color:var(--text3);margin-bottom:12px;"></div>
       <div class="form-row">
-        <div class="form-group">
-          <label>Date de début</label>
-          <input type="date" id="p-start"/>
-        </div>
-        <div class="form-group">
-          <label>Date de fin</label>
-          <input type="date" id="p-end"/>
-        </div>
+        <div class="form-group"><label>Date de début</label><input type="date" id="p-start"/></div>
+        <div class="form-group"><label>Date de fin</label><input type="date" id="p-end"/></div>
       </div>
       <div class="modal-btns">
         <button class="btn-cancel" onclick="closeModal('modal-period')">Annuler</button>
@@ -293,31 +268,19 @@
     </div>
   </div>
 
-  <!-- Modal entrée -->
   <div class="modal-backdrop hidden" id="modal-entry" onclick="closeModalBg(event,'modal-entry')">
     <div class="modal">
       <div class="modal-title">Modifier l'entrée</div>
-      <div class="form-row">
-        <div class="form-group full"><label>Client</label>
-          <select id="e-client-sel" onchange="prefillEditFromClient()"><option value="">— Sélectionner —</option></select>
-        </div>
-      </div>
+      <div class="form-row"><div class="form-group full"><label>Client</label><select id="e-client-sel" onchange="prefillEditFromClient()"><option value="">— Sélectionner —</option></select></div></div>
       <div class="form-row">
         <div class="form-group"><label>Date</label><input type="date" id="e-date"/></div>
         <div class="form-group"><label>Montant HT (€)</label><input type="number" id="e-ht" step="0.01" min="0" inputmode="decimal"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>TVA</label>
-          <select id="e-tva">
-            <option value="20">20 %</option><option value="10">10 %</option>
-            <option value="5.5">5,5 %</option><option value="2.1">2,1 %</option><option value="0">0 %</option>
-          </select>
-        </div>
+        <div class="form-group"><label>TVA</label><select id="e-tva"><option value="20">20 %</option><option value="10">10 %</option><option value="5.5">5,5 %</option><option value="2.1">2,1 %</option><option value="0">0 %</option></select></div>
         <div class="form-group"><label>Sous-traitant HT (€)</label><input type="number" id="e-sub" step="0.01" min="0" placeholder="0.00" inputmode="decimal"/></div>
       </div>
-      <div class="form-row">
-        <div class="form-group full"><label>Description</label><input type="text" id="e-desc" placeholder="Optionnel"/></div>
-      </div>
+      <div class="form-row"><div class="form-group full"><label>Description</label><input type="text" id="e-desc" placeholder="Optionnel"/></div></div>
       <div class="status-row">
         <button class="status-btn sel-valide" id="e-btn-valide" onclick="selectEditStatus('valide')">✓ Validé</button>
         <button class="status-btn" id="e-btn-option" onclick="selectEditStatus('option')">◇ Option</button>
@@ -329,25 +292,15 @@
     </div>
   </div>
 
-  <!-- Modal client -->
   <div class="modal-backdrop hidden" id="modal-client" onclick="closeModalBg(event,'modal-client')">
     <div class="modal">
       <div class="modal-title" id="modal-client-title">Nouveau client</div>
-      <div class="form-row">
-        <div class="form-group full"><label>Nom du client</label><input type="text" id="c-name" placeholder="Nom ou société"/></div>
-      </div>
+      <div class="form-row"><div class="form-group full"><label>Nom du client</label><input type="text" id="c-name" placeholder="Nom ou société"/></div></div>
       <div class="form-row">
         <div class="form-group"><label>Montant HT de base (€)</label><input type="number" id="c-amount" step="0.01" min="0" placeholder="0.00" inputmode="decimal"/></div>
-        <div class="form-group"><label>TVA par défaut</label>
-          <select id="c-tva">
-            <option value="20">20 % — standard</option><option value="10">10 % — réduit</option>
-            <option value="5.5">5,5 % — réduit</option><option value="2.1">2,1 % — super réduit</option><option value="0">0 % — exonéré</option>
-          </select>
-        </div>
+        <div class="form-group"><label>TVA par défaut</label><select id="c-tva"><option value="20">20 % — standard</option><option value="10">10 % — réduit</option><option value="5.5">5,5 % — réduit</option><option value="2.1">2,1 % — super réduit</option><option value="0">0 % — exonéré</option></select></div>
       </div>
-      <div class="form-row">
-        <div class="form-group full"><label>Note (optionnel)</label><input type="text" id="c-note" placeholder="Ex : agence Paris..."/></div>
-      </div>
+      <div class="form-row"><div class="form-group full"><label>Note (optionnel)</label><input type="text" id="c-note" placeholder="Ex : agence Paris..."/></div></div>
       <div class="modal-btns">
         <button class="btn-cancel" onclick="closeModal('modal-client')">Annuler</button>
         <button class="btn-confirm" onclick="saveClient()">Enregistrer</button>
@@ -356,34 +309,18 @@
   </div>
 
   <div class="panels">
-    <!-- Nouveau -->
     <div class="panel active" id="panel-add">
-      <div class="form-row">
-        <div class="form-group full"><label>Client</label>
-          <select id="f-client-sel" onchange="prefillFromClient()"><option value="">— Sélectionner ou saisir —</option></select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group full"><label>Nom libre (si hors base)</label>
-          <input type="text" id="f-client-name" placeholder="Ou tape un nom libre"/>
-        </div>
-      </div>
+      <div class="form-row"><div class="form-group full"><label>Client</label><select id="f-client-sel" onchange="prefillFromClient()"><option value="">— Sélectionner ou saisir —</option></select></div></div>
+      <div class="form-row"><div class="form-group full"><label>Nom libre (si hors base)</label><input type="text" id="f-client-name" placeholder="Ou tape un nom libre"/></div></div>
       <div class="form-row">
         <div class="form-group"><label>Date de prestation</label><input type="date" id="f-date"/></div>
         <div class="form-group"><label>Montant HT (€)</label><input type="number" id="f-ht" placeholder="0.00" step="0.01" min="0" inputmode="decimal"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>TVA</label>
-          <select id="f-tva">
-            <option value="20">20 % — standard</option><option value="10">10 % — réduit</option>
-            <option value="5.5">5,5 % — réduit</option><option value="2.1">2,1 % — super réduit</option><option value="0">0 % — exonéré</option>
-          </select>
-        </div>
+        <div class="form-group"><label>TVA</label><select id="f-tva"><option value="20">20 % — standard</option><option value="10">10 % — réduit</option><option value="5.5">5,5 % — réduit</option><option value="2.1">2,1 % — super réduit</option><option value="0">0 % — exonéré</option></select></div>
         <div class="form-group"><label>Sous-traitant HT (€)</label><input type="number" id="f-sub" placeholder="0.00" step="0.01" min="0" inputmode="decimal"/></div>
       </div>
-      <div class="form-row">
-        <div class="form-group full"><label>Description</label><input type="text" id="f-desc" placeholder="Optionnel"/></div>
-      </div>
+      <div class="form-row"><div class="form-group full"><label>Description</label><input type="text" id="f-desc" placeholder="Optionnel"/></div></div>
       <div class="status-row">
         <button class="status-btn sel-valide" id="btn-valide" onclick="selectStatus('valide')">✓ Validé</button>
         <button class="status-btn" id="btn-option" onclick="selectStatus('option')">◇ En option</button>
@@ -392,7 +329,6 @@
       <div class="msg" id="form-msg"></div>
     </div>
 
-    <!-- Calendrier -->
     <div class="panel" id="panel-list">
       <div class="cal-header">
         <div class="cal-title" id="cal-title">Avril 2026</div>
@@ -412,7 +348,6 @@
       <div id="day-detail-container"></div>
     </div>
 
-    <!-- Liste -->
     <div class="panel" id="panel-paye">
       <div class="liste-tabs">
         <button class="liste-tab active" id="ltab-paye" onclick="setListeTab('paye')">✓ Payé</button>
@@ -426,7 +361,6 @@
       <div id="paye-list"></div>
     </div>
 
-    <!-- Clients -->
     <div class="panel" id="panel-clients">
       <div class="section-header">
         <span class="section-title" id="clients-count">0 client(s)</span>
@@ -435,7 +369,6 @@
       <div id="clients-list"></div>
     </div>
 
-    <!-- Stats -->
     <div class="panel" id="panel-stats">
       <div class="stats-toggle">
         <button class="active" id="stats-valide-btn" onclick="setStatsMode('valide',this)">Validés</button>
@@ -443,13 +376,9 @@
         <button id="stats-paye-btn" onclick="setStatsMode('paye',this)">Payés</button>
       </div>
       <div class="pie-wrap"><canvas id="pieChart" role="img" aria-label="Camembert par client">Répartition.</canvas></div>
-      <table class="stats-table">
-        <thead><tr><th>Client</th><th>Montant</th><th>%</th></tr></thead>
-        <tbody id="stats-table-body"></tbody>
-      </table>
+      <table class="stats-table"><thead><tr><th>Client</th><th>Montant</th><th>%</th></tr></thead><tbody id="stats-table-body"></tbody></table>
     </div>
 
-    <!-- Réglages -->
     <div class="panel" id="panel-settings">
       <div class="settings-section">
         <div class="settings-title">Connexion NAS Synology</div>
@@ -472,14 +401,8 @@
           <div style="margin-bottom:10px;">
             <p style="margin-bottom:6px;">Dates exactes de l'année fiscale :</p>
             <div class="form-row">
-              <div class="form-group">
-                <label>Date de début</label>
-                <input type="date" id="def-fiscal-start"/>
-              </div>
-              <div class="form-group">
-                <label>Date de fin</label>
-                <input type="date" id="def-fiscal-end"/>
-              </div>
+              <div class="form-group"><label>Date de début</label><input type="date" id="def-fiscal-start"/></div>
+              <div class="form-group"><label>Date de fin</label><input type="date" id="def-fiscal-end"/></div>
             </div>
             <button class="btn-save" onclick="saveFiscalRange()" style="margin-top:4px;">Enregistrer</button>
           </div>
@@ -498,33 +421,20 @@
   </div>
 
   <div class="tabs">
-    <button class="tab active" id="tab-add" onclick="showPanel('add')">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Nouveau
-    </button>
-    <button class="tab" id="tab-list" onclick="showPanel('list')">
-      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendrier
-    </button>
-    <button class="tab" id="tab-paye" onclick="showPanel('paye')">
-      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Liste
-    </button>
-    <button class="tab" id="tab-clients" onclick="showPanel('clients')">
-      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients
-    </button>
-    <button class="tab" id="tab-stats" onclick="showPanel('stats')">
-      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Stats
-    </button>
-    <button class="tab" id="tab-settings" onclick="showPanel('settings')">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l-.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Réglages
-    </button>
+    <button class="tab active" id="tab-add" onclick="showPanel('add')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Nouveau</button>
+    <button class="tab" id="tab-list" onclick="showPanel('list')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendrier</button>
+    <button class="tab" id="tab-paye" onclick="showPanel('paye')"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Liste</button>
+    <button class="tab" id="tab-clients" onclick="showPanel('clients')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</button>
+    <button class="tab" id="tab-stats" onclick="showPanel('stats')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Stats</button>
+    <button class="tab" id="tab-settings" onclick="showPanel('settings')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l-.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Réglages</button>
   </div>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 let entries=[], clients=[];
 let mode='HT', currentYear=new Date().getFullYear();
-let periodMode='calendar'; // 'calendar' or 'custom'
-let periodStart=null, periodEnd=null; // custom period dates
+let periodMode='calendar';
+let periodStart=null, periodEnd=null;
 let selectedStatus='valide', editStatus='valide';
 let editId=null, editClientId=null;
 let mainChart=null, pieChart=null;
@@ -546,51 +456,34 @@ function loadConfig(){
 
 const PERIOD_KEY='facturation_period';
 
-function savePeriodConfig(type, startMD, endMD){
-  localStorage.setItem(PERIOD_KEY, JSON.stringify({type, startMD, endMD}));
-}
+function savePeriodConfig(type,startMD,endMD){localStorage.setItem(PERIOD_KEY,JSON.stringify({type,startMD,endMD}));}
 
 function loadPeriodConfig(){
   try{
     const p=JSON.parse(localStorage.getItem(PERIOD_KEY)||'{}');
-    if(!p.type) return; // no saved period, use default calendar
+    if(!p.type)return;
     const year=new Date().getFullYear();
-    if(p.type==='calendar'){
-      periodMode='calendar';
-      currentYear=year;
-    } else if(p.type==='fiscal'){
-      const now=new Date();
-      const startParts=(p.startMD||'10-01').split('-');
-      const startMonth=parseInt(startParts[0])-1;
-      const startDay=parseInt(startParts[1]);
-      const endParts=(p.endMD||'09-30').split('-');
-      const endMonth=parseInt(endParts[0])-1;
-      const endDay=parseInt(endParts[1]);
-      // determine start year
-      let startYear=year;
-      const fiscalStart=new Date(year, startMonth, startDay);
-      if(now < fiscalStart) startYear=year-1;
-      // end year
-      let endYear=endMonth < startMonth ? startYear+1 : startYear;
-      periodStart=new Date(startYear, startMonth, startDay, 0,0,0);
-      periodEnd=new Date(endYear, endMonth, endDay, 23,59,59);
+    if(p.type==='calendar'){periodMode='calendar';currentYear=year;}
+    else if(p.type==='fiscal'){
+      if(p.fullStart&&p.fullEnd){periodStart=new Date(p.fullStart+'T00:00:00');periodEnd=new Date(p.fullEnd+'T23:59:59');}
+      else{
+        const now=new Date();
+        const sp=(p.startMD||'10-01').split('-');const ep=(p.endMD||'09-30').split('-');
+        const sm=parseInt(sp[0])-1,sd=parseInt(sp[1]),em=parseInt(ep[0])-1,ed=parseInt(ep[1]);
+        let sy=year;if(now<new Date(year,sm,sd))sy=year-1;
+        let ey=em<sm?sy+1:sy;
+        periodStart=new Date(sy,sm,sd,0,0,0);periodEnd=new Date(ey,em,ed,23,59,59);
+      }
       periodMode='custom';
     } else if(p.type==='custom'){
-      // same as fiscal but with saved MD values
       const now=new Date();
-      const startParts=(p.startMD||'01-01').split('-');
-      const endParts=(p.endMD||'12-31').split('-');
-      const startMonth=parseInt(startParts[0])-1, startDay=parseInt(startParts[1]);
-      const endMonth=parseInt(endParts[0])-1, endDay=parseInt(endParts[1]);
-      let startYear=year;
-      const periodStartThisYear=new Date(year, startMonth, startDay);
-      if(now < periodStartThisYear) startYear=year-1;
-      let endYear=endMonth < startMonth ? startYear+1 : startYear;
-      periodStart=new Date(startYear, startMonth, startDay, 0,0,0);
-      periodEnd=new Date(endYear, endMonth, endDay, 23,59,59);
+      const sp=(p.startMD||'01-01').split('-');const ep=(p.endMD||'12-31').split('-');
+      const sm=parseInt(sp[0])-1,sd=parseInt(sp[1]),em=parseInt(ep[0])-1,ed=parseInt(ep[1]);
+      let sy=year;if(now<new Date(year,sm,sd))sy=year-1;
+      let ey=em<sm?sy+1:sy;
+      periodStart=new Date(sy,sm,sd,0,0,0);periodEnd=new Date(ey,em,ed,23,59,59);
       periodMode='custom';
     }
-    // update settings UI
     updateDefaultPeriodUI(p.type);
   }catch(e){}
 }
@@ -598,63 +491,44 @@ function loadPeriodConfig(){
 function saveFiscalRange(){
   const s=document.getElementById('def-fiscal-start').value;
   const e=document.getElementById('def-fiscal-end').value;
-  if(!s||!e){
-    document.getElementById('def-period-status').textContent='Renseigne les deux dates.';
-    document.getElementById('def-period-status').style.color='#f87171';
-    return;
-  }
-  // Apply immediately as custom period
-  periodStart=new Date(s+'T00:00:00');
-  periodEnd=new Date(e+'T23:59:59');
-  periodMode='custom';
-  // Save as fiscal with full dates
+  if(!s||!e){document.getElementById('def-period-status').textContent='Renseigne les deux dates.';document.getElementById('def-period-status').style.color='#f87171';return;}
+  periodStart=new Date(s+'T00:00:00');periodEnd=new Date(e+'T23:59:59');periodMode='custom';
   localStorage.setItem(PERIOD_KEY,JSON.stringify({type:'fiscal',fullStart:s,fullEnd:e}));
-  updatePeriodDisplay();
-  updateDashboard();
-  const sd=new Date(s).toLocaleDateString('fr-FR');
-  const ed=new Date(e).toLocaleDateString('fr-FR');
+  updatePeriodDisplay();updateDashboard();
+  const sd=new Date(s).toLocaleDateString('fr-FR');const ed=new Date(e).toLocaleDateString('fr-FR');
   document.getElementById('def-period-status').textContent='✓ Période fiscale : '+sd+' → '+ed;
   document.getElementById('def-period-status').style.color='var(--green-light)';
   updateDefaultPeriodUI('fiscal');
   setTimeout(()=>{document.getElementById('def-period-status').textContent='';},3000);
 }
 
-function setDefaultPeriod(type){ try {
+function setDefaultPeriod(type){
   const year=new Date().getFullYear();
+  const statusEl=document.getElementById('def-period-status');
   if(type==='calendar'){
-    periodMode='calendar'; currentYear=year;
+    periodMode='calendar';currentYear=year;
     savePeriodConfig('calendar','01-01','12-31');
-    var _dcr=document.getElementById('def-custom-row');if(_dcr)_dcr.style.display='none';
-    document.getElementById('def-period-status').textContent='✓ Année civile enregistrée (Jan → Déc)';
-  } else if(type==='fiscal'){
-    // default fiscal Oct->Sep
-    const now=new Date();
-    let startYear=year;
-    if(now < new Date(year,9,1)) startYear=year-1;
-    periodStart=new Date(startYear,9,1,0,0,0);
-    periodEnd=new Date(startYear+1,8,30,23,59,59);
-    periodMode='custom';
-    savePeriodConfig('fiscal','10-01','09-30');
-    var _dcr=document.getElementById('def-custom-row');if(_dcr)_dcr.style.display='none';
-    document.getElementById('def-period-status').textContent='✓ Année fiscale enregistrée (Oct → Sep)';
-  } else {
-    var _dcr2=document.getElementById('def-custom-row');if(_dcr2)_dcr2.style.display='grid';
-    document.getElementById('def-period-status').textContent='';
-    return;
+    if(statusEl){statusEl.textContent='✓ Année civile enregistrée (Jan → Déc)';statusEl.style.color='var(--green-light)';}
+  }else if(type==='fiscal'){
+    const now=new Date();let sy=year;
+    if(now<new Date(year,9,1))sy=year-1;
+    periodStart=new Date(sy,9,1,0,0,0);periodEnd=new Date(sy+1,8,30,23,59,59);
+    periodMode='custom';savePeriodConfig('fiscal','10-01','09-30');
+    if(statusEl){statusEl.textContent='✓ Année fiscale enregistrée (Oct → Sep)';statusEl.style.color='var(--green-light)';}
   }
-  updatePeriodDisplay(); updateDashboard();
-  updateDefaultPeriodUI(type);
-  setTimeout(()=>{document.getElementById('def-period-status').textContent='';},3000);
-} catch(e){ console.warn('setDefaultPeriod error:', e); } }
+  updatePeriodDisplay();updateDashboard();updateDefaultPeriodUI(type);
+  if(statusEl)setTimeout(()=>{statusEl.textContent='';},3000);
+}
 
 function updateDefaultPeriodUI(type){
   try{
-    document.getElementById('def-civil-btn').style.borderColor = type==='calendar' ? 'var(--blue)' : '';
-    document.getElementById('def-civil-btn').style.color = type==='calendar' ? 'var(--blue-light)' : '';
-    document.getElementById('def-fiscal-btn').style.borderColor = type==='fiscal' ? 'var(--blue)' : '';
-    document.getElementById('def-fiscal-btn').style.color = type==='fiscal' ? 'var(--blue-light)' : '';
+    document.getElementById('def-civil-btn').style.borderColor=type==='calendar'?'var(--blue)':'';
+    document.getElementById('def-civil-btn').style.color=type==='calendar'?'var(--blue-light)':'';
+    document.getElementById('def-fiscal-btn').style.borderColor=type==='fiscal'?'var(--blue)':'';
+    document.getElementById('def-fiscal-btn').style.color=type==='fiscal'?'var(--blue-light)':'';
   }catch(e){}
 }
+
 function saveConfig(){
   apiUrl=document.getElementById('s-url').value.trim().replace(/\/$/,'');
   apiSecret=document.getElementById('s-secret').value.trim();
@@ -695,8 +569,8 @@ function showPanel(id){
   if(id==='list')renderCalendar();
   if(id==='settings'){
     const saved=JSON.parse(localStorage.getItem(PERIOD_KEY)||'{}');
-    if(saved.fullStart) document.getElementById('def-fiscal-start').value=saved.fullStart;
-    if(saved.fullEnd) document.getElementById('def-fiscal-end').value=saved.fullEnd;
+    if(saved.fullStart)document.getElementById('def-fiscal-start').value=saved.fullStart;
+    if(saved.fullEnd)document.getElementById('def-fiscal-end').value=saved.fullEnd;
     updateDefaultPeriodUI(saved.type||'calendar');
   }
   if(id==='clients')renderClients();
@@ -706,11 +580,8 @@ function showPanel(id){
 
 function changePeriod(d){
   if(periodMode==='custom'){
-    // shift custom period by same duration
-    const ms=periodEnd-periodStart;
-    const shift=d*(ms+86400000);
-    periodStart=new Date(periodStart.getTime()+shift);
-    periodEnd=new Date(periodEnd.getTime()+shift);
+    const ms=periodEnd-periodStart;const shift=d*(ms+86400000);
+    periodStart=new Date(periodStart.getTime()+shift);periodEnd=new Date(periodEnd.getTime()+shift);
     updatePeriodDisplay();updateDashboard();return;
   }
   currentYear+=d;updatePeriodDisplay();updateDashboard();
@@ -721,7 +592,7 @@ function openPeriodModal(){
   if(periodMode==='custom'&&periodStart&&periodEnd){
     document.getElementById('p-start').value=periodStart.toISOString().slice(0,10);
     document.getElementById('p-end').value=periodEnd.toISOString().slice(0,10);
-  } else {
+  }else{
     document.getElementById('p-start').value=currentYear+'-01-01';
     document.getElementById('p-end').value=currentYear+'-12-31';
   }
@@ -730,50 +601,30 @@ function openPeriodModal(){
 }
 
 function setPeriodPreset(type){
-  if(type==='calendar'){
-    document.getElementById('p-start').value=currentYear+'-01-01';
-    document.getElementById('p-end').value=currentYear+'-12-31';
-  } else {
-    // fiscal: 1 oct N -> 30 sept N+1
-    document.getElementById('p-start').value=currentYear+'-10-01';
-    document.getElementById('p-end').value=(currentYear+1)+'-09-30';
-  }
+  if(type==='calendar'){document.getElementById('p-start').value=currentYear+'-01-01';document.getElementById('p-end').value=currentYear+'-12-31';}
+  else{document.getElementById('p-start').value=currentYear+'-10-01';document.getElementById('p-end').value=(currentYear+1)+'-09-30';}
   updatePeriodTypeDisplay();
 }
 
 function updatePeriodTypeDisplay(){
-  const s=document.getElementById('p-start').value;
-  const e=document.getElementById('p-end').value;
+  const s=document.getElementById('p-start').value;const e=document.getElementById('p-end').value;
   const el=document.getElementById('period-type-display');
-  if(s&&e){
-    const sd=new Date(s),ed=new Date(e);
-    el.textContent='Période : '+sd.toLocaleDateString('fr-FR')+' → '+ed.toLocaleDateString('fr-FR');
-  }
+  if(s&&e){el.textContent='Période : '+new Date(s).toLocaleDateString('fr-FR')+' → '+new Date(e).toLocaleDateString('fr-FR');}
 }
 
 function applyPeriod(){
-  const s=document.getElementById('p-start').value;
-  const e=document.getElementById('p-end').value;
+  const s=document.getElementById('p-start').value;const e=document.getElementById('p-end').value;
   if(!s||!e)return;
-  periodStart=new Date(s+'T00:00:00');
-  periodEnd=new Date(e+'T23:59:59');
-  periodMode='custom';
-  updatePeriodDisplay();
-  updateDashboard();
-  closeModal('modal-period');
+  periodStart=new Date(s+'T00:00:00');periodEnd=new Date(e+'T23:59:59');periodMode='custom';
+  updatePeriodDisplay();updateDashboard();closeModal('modal-period');
 }
 
 function updatePeriodDisplay(){
   const el=document.getElementById('year-display');
   if(periodMode==='custom'&&periodStart&&periodEnd){
     const sy=periodStart.getFullYear(),ey=periodEnd.getFullYear();
-    const sm=String(periodStart.getMonth()+1).padStart(2,'0');
-    const em=String(periodEnd.getMonth()+1).padStart(2,'0');
-    if(sy===ey) el.textContent=sy;
-    else el.textContent=sy+'/'+String(ey).slice(2);
-  } else {
-    el.textContent=currentYear;
-  }
+    if(sy===ey)el.textContent=sy;else el.textContent=sy+'/'+String(ey).slice(2);
+  }else{el.textContent=currentYear;}
 }
 
 function getFilteredEntries(){
@@ -782,12 +633,12 @@ function getFilteredEntries(){
   }
   return entries.filter(e=>new Date(e.date).getFullYear()===currentYear);
 }
+
 function setMode(m){mode=m;document.querySelectorAll('.mode-pill button').forEach(b=>b.classList.toggle('active',b.textContent===m));renderAll();}
 function setStatsMode(m,el){statsMode=m;document.querySelectorAll('.stats-toggle button').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderStats();}
 function selectStatus(s){selectedStatus=s;document.getElementById('btn-valide').className='status-btn'+(s==='valide'?' sel-valide':'');document.getElementById('btn-option').className='status-btn'+(s==='option'?' sel-option':'');}
 function selectEditStatus(s){editStatus=s;document.getElementById('e-btn-valide').className='status-btn'+(s==='valide'?' sel-valide':'');document.getElementById('e-btn-option').className='status-btn'+(s==='option'?' sel-option':'');}
 
-// ── Calendar ──
 function calNav(d){calMonth+=d;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
 function calToday(){calYear=new Date().getFullYear();calMonth=new Date().getMonth();renderCalendar();}
 
@@ -814,11 +665,9 @@ function renderCalendar(){
     if(dayE.length>2)dh+=`<div class="cal-more">+${dayE.length-2}</div>`;
     dh+='</div>';html+=dh;
   }
-  const total=startDow+lastDay.getDate();
-  const rem=(7-total%7)%7;
+  const total=startDow+lastDay.getDate();const rem=(7-total%7)%7;
   for(let i=1;i<=rem;i++)html+=`<div class="cal-day other-month"><div class="cal-day-num">${i}</div></div>`;
-  grid.innerHTML=html;
-  renderDayDetail();
+  grid.innerHTML=html;renderDayDetail();
 }
 
 function selectDay(d){selectedDay=selectedDay===d?null:d;renderCalendar();}
@@ -830,94 +679,95 @@ function renderDayDetail(){
   const dayE=entries.filter(e=>e.date===selectedDay&&(!fc||e.clientId==fc));
   if(!dayE.length){container.innerHTML='';return;}
   const label=new Date(selectedDay+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-  let html=`<div class="day-detail"><div class="day-detail-title">${label}</div>`;
+  let html='<div class="day-detail"><div class="day-detail-title">'+label+'</div>';
   dayE.forEach(e=>{
     const val=getVal(e),sub=getSubVal(e);
     const isPaye=e.status==='paye';
-    html+=`<div class="day-entry-card">
-      <div class="day-entry-name">${getClientName(e)}${e.desc?' — <span style="font-weight:400;color:var(--text3)">'+e.desc+'</span>':''}</div>
-      <div class="day-entry-amount">${fmt(val)}${sub>0?' (ST: -'+fmt(sub)+')':''} · <span style="color:${isPaye?'var(--emerald-light)':e.status==='valide'?'var(--blue-light)':'var(--amber-light)'}">${isPaye?'Payé':e.status==='valide'?'Validé':'Option'}</span></div>
-      <div class="day-entry-actions">
-        ${!isPaye?`<button class="day-btn paid" onclick="markPaid(${e.id})">✓ Payé</button>`:''}
-        ${isPaye?`<button class="day-btn unpaid" onclick="markUnpaid(${e.id})">↩ Impayé</button>`:''}
-        <button class="day-btn edit" onclick="openEditModal(${e.id})">✏️ Modifier</button>
-        <button class="day-btn del" onclick="deleteEntry(${e.id})">🗑</button>
-      </div>
-    </div>`;
+    const desc=e.desc?(' — <span style="font-weight:400;color:var(--text3)">'+e.desc+'</span>'):'';
+    const col=isPaye?'var(--emerald-light)':e.status==='valide'?'var(--blue-light)':'var(--amber-light)';
+    const lbl=isPaye?'Payé':e.status==='valide'?'Validé':'Option';
+    html+='<div class="day-entry-card">'
+      +'<div class="day-entry-name">'+getClientName(e)+desc+'</div>'
+      +'<div class="day-entry-amount">'+fmt(val)+(sub>0?' (ST: -'+fmt(sub)+')':'')+' · <span style="color:'+col+'">'+lbl+'</span></div>'
+      +'<div class="day-entry-actions">'
+      +(!isPaye?'<button class="day-btn paid" onclick="markPaid('+e.id+')">✓ Payé</button>':'')
+      +(isPaye?'<button class="day-btn unpaid" onclick="markUnpaid('+e.id+')">↩ Impayé</button>':'')
+      +'<button class="day-btn edit" onclick="openEditModal('+e.id+')">✏️ Modifier</button>'
+      +'<button class="day-btn del" onclick="deleteEntry('+e.id+')">🗑</button>'
+      +'</div></div>';
   });
   html+='</div>';
   container.innerHTML=html;
 }
 
-// ── Payé panel ──
-var _listeTab = 'paye';
-
-function setListeTab(tab) {
-  _listeTab = tab;
-  document.querySelectorAll('.liste-tab').forEach(function(b) { b.classList.remove('active','paye','valide','option'); });
-  var btn = document.getElementById('ltab-' + tab);
-  if(btn) { btn.classList.add('active', tab); }
+// ── Liste panel ──
+var _listeTab='paye';
+function setListeTab(tab){
+  _listeTab=tab;
+  document.querySelectorAll('.liste-tab').forEach(b=>b.classList.remove('active','paye','valide','option'));
+  const btn=document.getElementById('ltab-'+tab);
+  if(btn)btn.classList.add('active',tab);
   renderPaye();
 }
 
 function renderPaye(){
-  var yr = getFilteredEntries().filter(function(e){ return e.status === _listeTab; });
-  var total = yr.reduce(function(a,e){ return a + getVal(e); }, 0);
-  var labels = {paye:'CA encaissé', valide:'Total validé', option:'Total options'};
-  var lbl = document.getElementById('liste-total-label');
-  if(lbl) lbl.textContent = labels[_listeTab] || '';
-  document.getElementById('paye-total').textContent = fmt(total);
-  var tb = document.getElementById('liste-total-block');
+  const yr=getFilteredEntries().filter(e=>e.status===_listeTab);
+  const total=yr.reduce((a,e)=>a+getVal(e),0);
+  const labels={paye:'CA encaissé',valide:'Total validé',option:'Total options'};
+  const lbl=document.getElementById('liste-total-label');if(lbl)lbl.textContent=labels[_listeTab]||'';
+  document.getElementById('paye-total').textContent=fmt(total);
+  const tb=document.getElementById('liste-total-block');
   if(tb){
-    tb.style.background = _listeTab==='paye' ? 'rgba(5,150,105,0.1)' : _listeTab==='valide' ? 'rgba(59,130,246,0.1)' : 'rgba(245,158,11,0.1)';
-    tb.style.borderColor = _listeTab==='paye' ? 'rgba(5,150,105,0.3)' : _listeTab==='valide' ? 'rgba(59,130,246,0.3)' : 'rgba(245,158,11,0.3)';
+    tb.style.background=_listeTab==='paye'?'rgba(5,150,105,0.1)':_listeTab==='valide'?'rgba(59,130,246,0.1)':'rgba(245,158,11,0.1)';
+    tb.style.borderColor=_listeTab==='paye'?'rgba(5,150,105,0.3)':_listeTab==='valide'?'rgba(59,130,246,0.3)':'rgba(245,158,11,0.3)';
   }
-  var tv = document.getElementById('paye-total');
-  if(tv) tv.style.color = _listeTab==='paye' ? 'var(--emerald-light)' : _listeTab==='valide' ? 'var(--blue-light)' : 'var(--amber-light)';
-  var el = document.getElementById('paye-list');
+  const tv=document.getElementById('paye-total');
+  if(tv)tv.style.color=_listeTab==='paye'?'var(--emerald-light)':_listeTab==='valide'?'var(--blue-light)':'var(--amber-light)';
+  const el=document.getElementById('paye-list');
   if(!yr.length){
-    var icons = {paye:'✅', valide:'📋', option:'◇'};
-    var msgs = {paye:'Aucune prestation payée.', valide:'Aucun contrat validé.', option:'Aucune option en cours.'};
+    const icons={paye:'✅',valide:'📋',option:'◇'};
+    const msgs={paye:'Aucune prestation payée.',valide:'Aucun contrat validé.',option:'Aucune option en cours.'};
     el.innerHTML='<div class="empty-state"><div style="font-size:2rem;">'+icons[_listeTab]+'</div><p>'+msgs[_listeTab]+'</p></div>';
     return;
   }
-  var sorted = yr.slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
-  var iconColor = _listeTab==='paye' ? 'var(--emerald-bg)' : _listeTab==='valide' ? 'var(--blue-bg)' : 'var(--amber-bg)';
-  var textColor = _listeTab==='paye' ? 'var(--emerald-light)' : _listeTab==='valide' ? 'var(--blue-light)' : 'var(--amber-light)';
-  el.innerHTML = sorted.map(function(e){
-    var val=getVal(e), sub=getSubVal(e);
-    var actions = '';
+  const ic=_listeTab==='paye'?'var(--emerald-bg)':_listeTab==='valide'?'var(--blue-bg)':'var(--amber-bg)';
+  const tc=_listeTab==='paye'?'var(--emerald-light)':_listeTab==='valide'?'var(--blue-light)':'var(--amber-light)';
+  el.innerHTML=[...yr].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(e=>{
+    const val=getVal(e),sub=getSubVal(e);
+    let actions='';
     if(_listeTab==='paye'){
-      actions = '<button class="btn-unpaid" onclick="markUnpaid('+e.id+')">↩ Impayé</button><button class="btn-paid-edit" onclick="openEditModal('+e.id+')">✏️ Modifier</button><button class="btn-paid-del" onclick="deleteEntry('+e.id+')">🗑 Suppr.</button>';
-    } else if(_listeTab==='valide'){
-      actions = '<button style="flex:1;height:28px;background:var(--emerald-bg);border:0.5px solid rgba(5,150,105,0.3);color:var(--emerald-light);border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;" onclick="markPaid('+e.id+')">✓ Marquer payé</button><button class="btn-paid-edit" onclick="openEditModal('+e.id+')">✏️ Modifier</button><button class="btn-paid-del" onclick="deleteEntry('+e.id+')">🗑 Suppr.</button>';
-    } else {
-      actions = '<button style="flex:1;height:28px;background:var(--blue-bg);border:0.5px solid rgba(59,130,246,0.3);color:var(--blue-light);border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;" onclick="changeStatus('+e.id+','valide')">→ Valider</button><button class="btn-paid-edit" onclick="openEditModal('+e.id+')">✏️ Modifier</button><button class="btn-paid-del" onclick="deleteEntry('+e.id+')">🗑 Suppr.</button>';
+      actions='<button class="btn-unpaid" onclick="markUnpaid('+e.id+')">↩ Impayé</button>'
+        +'<button class="btn-paid-edit" onclick="openEditModal('+e.id+')">✏️ Modifier</button>'
+        +'<button class="btn-paid-del" onclick="deleteEntry('+e.id+')">🗑 Suppr.</button>';
+    }else if(_listeTab==='valide'){
+      actions='<button style="flex:1;height:28px;background:var(--emerald-bg);border:0.5px solid rgba(5,150,105,0.3);color:var(--emerald-light);border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;" onclick="markPaid('+e.id+')">✓ Marquer payé</button>'
+        +'<button class="btn-paid-edit" onclick="openEditModal('+e.id+')">✏️ Modifier</button>'
+        +'<button class="btn-paid-del" onclick="deleteEntry('+e.id+')">🗑 Suppr.</button>';
+    }else{
+      actions='<button style="flex:1;height:28px;background:var(--blue-bg);border:0.5px solid rgba(59,130,246,0.3);color:var(--blue-light);border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;" onclick="changeStatus('+e.id+',\'valide\')">→ Valider</button>'
+        +'<button class="btn-paid-edit" onclick="openEditModal('+e.id+')">✏️ Modifier</button>'
+        +'<button class="btn-paid-del" onclick="deleteEntry('+e.id+')">🗑 Suppr.</button>';
     }
-    return '<div class="paid-card"><div class="paid-card-top"><div class="paid-icon" style="background:'+iconColor+';color:'+textColor+'">'+initials(getClientName(e))+'</div><div class="paid-body"><div class="paid-client">'+getClientName(e)+'</div><div class="paid-meta">'+new Date(e.date).toLocaleDateString('fr-FR')+(e.desc?' · '+e.desc:'')+'</div></div><div class="paid-right"><div class="paid-amount" style="color:'+textColor+'">'+fmt(val)+'</div>'+(sub>0?'<div style="font-size:10px;color:var(--red-light)">- '+fmt(sub)+' ST</div>':'')+'</div></div><div class="paid-actions">'+actions+'</div></div>';
+    return '<div class="paid-card">'
+      +'<div class="paid-card-top">'
+      +'<div class="paid-icon" style="background:'+ic+';color:'+tc+'">'+initials(getClientName(e))+'</div>'
+      +'<div class="paid-body"><div class="paid-client">'+getClientName(e)+'</div>'
+      +'<div class="paid-meta">'+new Date(e.date).toLocaleDateString('fr-FR')+(e.desc?' · '+e.desc:'')+'</div></div>'
+      +'<div class="paid-right"><div class="paid-amount" style="color:'+tc+'">'+fmt(val)+'</div>'
+      +(sub>0?'<div style="font-size:10px;color:var(--red-light)">- '+fmt(sub)+' ST</div>':'')
+      +'</div></div>'
+      +'<div class="paid-actions">'+actions+'</div></div>';
   }).join('');
 }
 
-// ── Mark paid / unpaid ──
-async function markPaid(id){
-  const e=entries.find(x=>x.id===id);if(!e)return;
-  e.status='paye';saveLocal();renderAll();await apiPut('/entries/'+id,e);
-}
-async function markUnpaid(id){
-  const e=entries.find(x=>x.id===id);if(!e)return;
-  e.status='valide';saveLocal();renderAll();await apiPut('/entries/'+id,e);
-}
+async function markPaid(id){const e=entries.find(x=>x.id===id);if(!e)return;e.status='paye';saveLocal();renderAll();await apiPut('/entries/'+id,e);}
+async function markUnpaid(id){const e=entries.find(x=>x.id===id);if(!e)return;e.status='valide';saveLocal();renderAll();await apiPut('/entries/'+id,e);}
+async function changeStatus(id,ns){const e=entries.find(x=>x.id===id);if(!e)return;e.status=ns;saveLocal();renderAll();await apiPut('/entries/'+id,e);}
 
-async function changeStatus(id, newStatus){
-  const e=entries.find(x=>x.id===id);if(!e)return;
-  e.status=newStatus;saveLocal();renderAll();await apiPut('/entries/'+id,e);
-}
-
-// ── Selects ──
 function refreshClientSelects(){
-  const base='<option value="">— Sélectionner ou saisir —</option>'+clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  const edit='<option value="">— Sélectionner —</option>'+clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  const cal='<option value="">Tous les clients</option>'+clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  const base='<option value="">— Sélectionner ou saisir —</option>'+clients.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');
+  const edit='<option value="">— Sélectionner —</option>'+clients.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');
+  const cal='<option value="">Tous les clients</option>'+clients.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');
   document.getElementById('f-client-sel').innerHTML=base;
   document.getElementById('e-client-sel').innerHTML=edit;
   document.getElementById('cal-filter-client').innerHTML=cal;
@@ -940,7 +790,6 @@ function getClientName(entry){
   return entry.clientName||entry.client||'';
 }
 
-// ── Add entry ──
 async function addEntry(){
   const clientId=document.getElementById('f-client-sel').value;
   const clientName=clientId?'':(document.getElementById('f-client-name').value.trim());
@@ -963,7 +812,6 @@ async function addEntry(){
   setTimeout(()=>{msg.textContent='';},2500);
 }
 
-// ── Edit ──
 function openEditModal(id){
   const e=entries.find(x=>x.id===id);if(!e)return;
   editId=id;refreshClientSelects();
@@ -973,7 +821,6 @@ function openEditModal(id){
   document.getElementById('e-tva').value=e.tva;
   document.getElementById('e-sub').value=e.sub||0;
   document.getElementById('e-desc').value=e.desc||'';
-  // For paye entries, show as valide in edit
   selectEditStatus(e.status==='paye'?'valide':e.status);
   document.getElementById('modal-entry').classList.remove('hidden');
 }
@@ -1003,7 +850,6 @@ async function deleteEntry(id){
   entries=entries.filter(e=>e.id!==id);saveLocal();renderAll();await apiDelete('/entries/'+id);
 }
 
-// ── Clients ──
 function openClientModal(id){
   editClientId=id||null;
   document.getElementById('modal-client-title').textContent=id?'Modifier le client':'Nouveau client';
@@ -1027,17 +873,11 @@ async function deleteClient(id){
   clients=clients.filter(c=>c.id!==id);saveLocal();renderClients();refreshClientSelects();await apiDelete('/clients/'+id);
 }
 
-// ── Helpers ──
 function fmt(v){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);}
 function getVal(e){return mode==='HT'?e.ht:e.ttc;}
 function getSubVal(e){return mode==='HT'?(e.sub||0):(e.subTtc||0);}
 function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
 
-// ── Dashboard ──
-// Logique :
-// Validé = status valide | Net validé = Validés - ST validés
-// Option = status option | Net+opt = (Validés+Options) - (ST validés + ST options)
-// Payé = status paye (CA encaissé)
 function updateDashboard(){
   const yr=getFilteredEntries();
   const valide=yr.filter(e=>e.status==='valide');
@@ -1048,25 +888,20 @@ function updateDashboard(){
   const sumP=paye.reduce((a,e)=>a+getVal(e),0);
   const stV=valide.reduce((a,e)=>a+getSubVal(e),0);
   const stO=option.reduce((a,e)=>a+getSubVal(e),0);
-  const netV=sumV-stV;
-  const netOpt=sumV+sumO-stV-stO;
   document.getElementById('m-st-valide').textContent=fmt(stV);
   document.getElementById('m-st-option').textContent=fmt(stO);
   document.getElementById('m-valide').textContent=fmt(sumV);
   document.getElementById('m-option').textContent=fmt(sumO);
   document.getElementById('m-paye').textContent=fmt(sumP);
-  document.getElementById('m-net-valide').textContent=fmt(netV);
-  document.getElementById('m-net-opt').textContent=fmt(netOpt);
+  document.getElementById('m-net-valide').textContent=fmt(sumV-stV);
+  document.getElementById('m-net-opt').textContent=fmt(sumV+sumO-stV-stO);
 
-  // Build chart labels and data based on period
-  let chartLabels, dataV, dataO, dataP, dataST;
+  let chartLabels,dataV,dataO,dataP,dataST;
   if(periodMode==='custom'&&periodStart&&periodEnd){
-    // Generate month-by-month labels for the custom period
-    chartLabels=[]; dataV=[]; dataO=[]; dataP=[]; dataST=[];
+    chartLabels=[];dataV=[];dataO=[];dataP=[];dataST=[];
     let cur=new Date(periodStart.getFullYear(),periodStart.getMonth(),1);
     const endMonth=new Date(periodEnd.getFullYear(),periodEnd.getMonth(),1);
     while(cur<=endMonth){
-      const label=MONTHS[cur.getMonth()]+(cur.getFullYear()!==periodStart.getFullYear()&&cur.getMonth()===0?'\n'+cur.getFullYear():'');
       chartLabels.push(MONTHS[cur.getMonth()]+' '+String(cur.getFullYear()).slice(2));
       dataV.push(0);dataO.push(0);dataP.push(0);dataST.push(0);
       cur.setMonth(cur.getMonth()+1);
@@ -1081,9 +916,8 @@ function updateDashboard(){
         dataST[idx]+=getSubVal(e);
       }
     });
-  } else {
-    chartLabels=MONTHS;
-    dataV=Array(12).fill(0);dataO=Array(12).fill(0);dataP=Array(12).fill(0);dataST=Array(12).fill(0);
+  }else{
+    chartLabels=MONTHS;dataV=Array(12).fill(0);dataO=Array(12).fill(0);dataP=Array(12).fill(0);dataST=Array(12).fill(0);
     yr.forEach(e=>{
       const m=new Date(e.date).getMonth();
       if(e.status==='valide')dataV[m]+=getVal(e);
@@ -1093,7 +927,6 @@ function updateDashboard(){
     });
   }
   const dataNetV=dataV.map((v,i)=>v-dataST[i]);
-
   if(mainChart)mainChart.destroy();
   mainChart=new Chart(document.getElementById('mainChart'),{type:'bar',
     data:{labels:chartLabels,datasets:[
@@ -1114,18 +947,7 @@ function renderClients(){
   const el=document.getElementById('clients-list');
   document.getElementById('clients-count').textContent=clients.length+' client(s)';
   if(!clients.length){el.innerHTML='<div class="empty-state"><div style="font-size:2rem;">👥</div><p>Aucun client.</p></div>';return;}
-  el.innerHTML=clients.map(c=>`
-    <div class="client-card">
-      <div class="client-icon">${initials(c.name)}</div>
-      <div class="client-body">
-        <div class="client-name">${c.name}</div>
-        <div class="client-meta">${c.amount?fmt(c.amount)+' HT · ':''}TVA ${c.tva}%${c.note?' · '+c.note:''}</div>
-      </div>
-      <div class="client-actions">
-        <button class="btn-client-edit" onclick="openClientModal(${c.id})">✏️</button>
-        <button class="btn-client-del" onclick="deleteClient(${c.id})">🗑</button>
-      </div>
-    </div>`).join('');
+  el.innerHTML=clients.map(c=>`<div class="client-card"><div class="client-icon">${initials(c.name)}</div><div class="client-body"><div class="client-name">${c.name}</div><div class="client-meta">${c.amount?fmt(c.amount)+' HT · ':''}TVA ${c.tva}%${c.note?' · '+c.note:''}</div></div><div class="client-actions"><button class="btn-client-edit" onclick="openClientModal(${c.id})">✏️</button><button class="btn-client-del" onclick="deleteClient(${c.id})">🗑</button></div></div>`).join('');
 }
 
 function renderStats(){
@@ -1144,11 +966,7 @@ function renderStats(){
   });
   const tbody=document.getElementById('stats-table-body');
   if(!sorted.length){tbody.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:16px;">Aucune donnée</td></tr>';return;}
-  tbody.innerHTML=sorted.map((x,i)=>`<tr>
-    <td><span class="client-dot" style="background:${colors[i]};"></span>${x[0]}</td>
-    <td style="font-weight:600;">${fmt(x[1])}</td>
-    <td style="color:var(--text3);">${total?Math.round(x[1]/total*100):0} %</td>
-  </tr>`).join('');
+  tbody.innerHTML=sorted.map((x,i)=>`<tr><td><span class="client-dot" style="background:${colors[i]};"></span>${x[0]}</td><td style="font-weight:600;">${fmt(x[1])}</td><td style="color:var(--text3);">${total?Math.round(x[1]/total*100):0} %</td></tr>`).join('');
 }
 
 function renderAll(){
@@ -1158,7 +976,6 @@ function renderAll(){
   renderClients();
 }
 
-// ── Init ──
 document.getElementById('f-date').valueAsDate=new Date();
 document.getElementById('year-display').textContent=currentYear;updatePeriodDisplay();
 loadConfig();loadPeriodConfig();loadLocal();refreshClientSelects();renderAll();
@@ -1174,7 +991,8 @@ if("serviceWorker" in navigator){
   });
 }
 
-var _updReady=false;function updBtn(){if(_updReady){if(window.electronAPI)window.electronAPI.installUpdate();}else{if(window.electronAPI)window.electronAPI.downloadUpdate();}}
+var _updReady=false;
+function updBtn(){if(_updReady){if(window.electronAPI)window.electronAPI.installUpdate();}else{if(window.electronAPI)window.electronAPI.downloadUpdate();}}
 function updDismiss(){document.getElementById("upd-banner").classList.remove("show");document.querySelector(".app").style.paddingTop="0";}
 function _showBanner(){document.getElementById("upd-banner").classList.add("show");document.querySelector(".app").style.paddingTop=document.getElementById("upd-banner").offsetHeight+"px";}
 if(typeof window!=="undefined"&&window.electronAPI){
