@@ -225,7 +225,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.4.4</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.5.1</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -467,15 +467,19 @@
             <button class="period-preset-btn" id="def-civil-btn" onclick="setDefaultPeriod('calendar')">📅 Année civile</button>
             <button class="period-preset-btn" id="def-fiscal-btn" onclick="setDefaultPeriod('fiscal')">📊 Année fiscale</button>
           </div>
-          <div class="form-row" id="def-custom-row" style="display:none;">
-            <div class="form-group">
-              <label>Début (MM-JJ)</label>
-              <input type="text" id="def-start-md" placeholder="10-01" maxlength="5"/>
+          <div style="margin-bottom:10px;">
+            <p style="margin-bottom:6px;">Dates exactes de l'année fiscale :</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date de début</label>
+                <input type="date" id="def-fiscal-start"/>
+              </div>
+              <div class="form-group">
+                <label>Date de fin</label>
+                <input type="date" id="def-fiscal-end"/>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Fin (MM-JJ)</label>
-              <input type="text" id="def-end-md" placeholder="09-30" maxlength="5"/>
-            </div>
+            <button class="btn-save" onclick="saveFiscalRange()" style="margin-top:4px;">Enregistrer</button>
           </div>
           <div id="def-period-status" style="font-size:12px;color:var(--green-light);margin-top:6px;min-height:16px;"></div>
         </div>
@@ -553,7 +557,6 @@ function loadPeriodConfig(){
       periodMode='calendar';
       currentYear=year;
     } else if(p.type==='fiscal'){
-      // fiscal: if current date is before end month-day, use year-1 as start
       const now=new Date();
       const startParts=(p.startMD||'10-01').split('-');
       const startMonth=parseInt(startParts[0])-1;
@@ -588,6 +591,30 @@ function loadPeriodConfig(){
     // update settings UI
     updateDefaultPeriodUI(p.type);
   }catch(e){}
+}
+
+function saveFiscalRange(){
+  const s=document.getElementById('def-fiscal-start').value;
+  const e=document.getElementById('def-fiscal-end').value;
+  if(!s||!e){
+    document.getElementById('def-period-status').textContent='Renseigne les deux dates.';
+    document.getElementById('def-period-status').style.color='#f87171';
+    return;
+  }
+  // Apply immediately as custom period
+  periodStart=new Date(s+'T00:00:00');
+  periodEnd=new Date(e+'T23:59:59');
+  periodMode='custom';
+  // Save as fiscal with full dates
+  localStorage.setItem(PERIOD_KEY,JSON.stringify({type:'fiscal',fullStart:s,fullEnd:e}));
+  updatePeriodDisplay();
+  updateDashboard();
+  const sd=new Date(s).toLocaleDateString('fr-FR');
+  const ed=new Date(e).toLocaleDateString('fr-FR');
+  document.getElementById('def-period-status').textContent='✓ Période fiscale : '+sd+' → '+ed;
+  document.getElementById('def-period-status').style.color='var(--green-light)';
+  updateDefaultPeriodUI('fiscal');
+  setTimeout(()=>{document.getElementById('def-period-status').textContent='';},3000);
 }
 
 function setDefaultPeriod(type){
@@ -664,6 +691,12 @@ function showPanel(id){
   document.getElementById('panel-'+id).classList.add('active');
   document.getElementById('tab-'+id).classList.add('active');
   if(id==='list')renderCalendar();
+  if(id==='settings'){
+    const saved=JSON.parse(localStorage.getItem(PERIOD_KEY)||'{}');
+    if(saved.fullStart) document.getElementById('def-fiscal-start').value=saved.fullStart;
+    if(saved.fullEnd) document.getElementById('def-fiscal-end').value=saved.fullEnd;
+    updateDefaultPeriodUI(saved.type||'calendar');
+  }
   if(id==='clients')renderClients();
   if(id==='stats')renderStats();
   if(id==='paye')renderPaye();
@@ -1116,28 +1149,21 @@ if("serviceWorker" in navigator){
   });
 }
 
-// ===== ELECTRON AUTO-UPDATER =====
+// ===== ELECTRON AUTO-UPDATER v1.5.1 =====
 var _updReady = false;
-
 function updBtn() {
-  if (_updReady) {
-    if (window.electronAPI) { window.electronAPI.installUpdate(); }
-  } else {
-    if (window.electronAPI) { window.electronAPI.downloadUpdate(); }
-  }
+  if (_updReady) { if (window.electronAPI) { window.electronAPI.installUpdate(); } }
+  else { if (window.electronAPI) { window.electronAPI.downloadUpdate(); } }
 }
-
 function updDismiss() {
   document.getElementById('upd-banner').classList.remove('show');
   document.querySelector('.app').style.paddingTop = '0';
 }
-
 function _showBanner() {
   document.getElementById('upd-banner').classList.add('show');
   var h = document.getElementById('upd-banner').offsetHeight;
   document.querySelector('.app').style.paddingTop = h + 'px';
 }
-
 if (typeof window !== 'undefined' && window.electronAPI) {
   window.electronAPI.onUpdateAvailable(function(data) {
     var v = data && data.version ? data.version : '';
