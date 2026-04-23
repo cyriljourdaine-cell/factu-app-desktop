@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, shell, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 
@@ -22,27 +22,28 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
+  // Inject app version into the page once loaded
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.executeJavaScript(
+      `document.getElementById('app-version').textContent = 'v${app.getVersion()}';`
+    );
+  });
+
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
     return { action: 'deny' };
   });
 }
 
-// ── Auto updater ──
 function setupUpdater() {
-  autoUpdater.autoDownload = false; // on télécharge seulement si l'user accepte
+  autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
 
   autoUpdater.on('update-available', (info) => {
-    // Envoie les infos de la MAJ à la fenêtre
     mainWindow.webContents.send('update-available', {
       version: info.version,
-      releaseNotes: info.releaseNotes || 'Améliorations et corrections.'
+      releaseNotes: info.releaseNotes || 'Ameliorations et corrections.'
     });
-  });
-
-  autoUpdater.on('update-not-available', () => {
-    // Silencieux — pas de MAJ dispo
   });
 
   autoUpdater.on('download-progress', (progress) => {
@@ -57,21 +58,13 @@ function setupUpdater() {
     console.error('Updater error:', err);
   });
 
-  // Vérifier les MAJ au démarrage (après 3 secondes)
   setTimeout(() => {
     autoUpdater.checkForUpdates();
   }, 3000);
 }
 
-// IPC — l'utilisateur clique "Mettre à jour"
-ipcMain.on('download-update', () => {
-  autoUpdater.downloadUpdate();
-});
-
-// IPC — l'utilisateur clique "Installer maintenant"
-ipcMain.on('install-update', () => {
-  autoUpdater.quitAndInstall();
-});
+ipcMain.on('download-update', () => { autoUpdater.downloadUpdate(); });
+ipcMain.on('install-update', () => { autoUpdater.quitAndInstall(); });
 
 app.whenReady().then(() => {
   createWindow();
