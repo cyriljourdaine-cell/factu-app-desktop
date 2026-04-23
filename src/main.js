@@ -8,7 +8,18 @@ autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
 let mainWindow;
-let pendingUpdate = null; // Store update info if page not ready yet
+let pendingUpdate = null;
+let pageReady = false;
+
+function sendUpdateToPage(payload) {
+  if (mainWindow && pageReady) {
+    log.info('Sending update to page:', payload.version);
+    mainWindow.webContents.send('update-available', payload);
+  } else {
+    log.info('Page not ready yet, storing update:', payload.version);
+    pendingUpdate = payload;
+  }
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -29,16 +40,19 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   mainWindow.webContents.on('did-finish-load', () => {
-    // Inject version
     mainWindow.webContents.executeJavaScript(
       `document.getElementById('app-version').textContent = 'v${app.getVersion()}';`
     );
-    // If update was found before page loaded, send it now
-    if (pendingUpdate) {
-      log.info('Sending pending update to page:', pendingUpdate.version);
-      mainWindow.webContents.send('update-available', pendingUpdate);
-      pendingUpdate = null;
-    }
+    // Wait 2 seconds for JS listeners to register, then mark page as ready
+    setTimeout(() => {
+      pageReady = true;
+      log.info('Page ready');
+      if (pendingUpdate) {
+        log.info('Sending pending update:', pendingUpdate.version);
+        mainWindow.webContents.send('update-available', pendingUpdate);
+        pendingUpdate = null;
+      }
+    }, 2000);
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -51,60 +65,41 @@ function setupUpdater() {
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
 
-  autoUpdater.on('checking-for-update', () => {
-    log.info('Checking for update...');
-  });
+  autoUpdater.on('checking-for-update', () => log.info('Checking for update...'));
 
   autoUpdater.on('update-available', (info) => {
     log.info('Update available:', info.version);
-    const payload = {
+    sendUpdateToPage({
       version: info.version,
       releaseNotes: info.releaseNotes || 'Ameliorations et corrections.'
-    };
-    // Check if page is ready
-    if (mainWindow && mainWindow.webContents && !mainWindow.webContents.isLoading()) {
-      mainWindow.webContents.send('update-available', payload);
-    } else {
-      // Store for later when page finishes loading
-      pendingUpdate = payload;
-      log.info('Page not ready, storing update for later');
-    }
+    });
   });
 
   autoUpdater.on('update-not-available', (info) => {
-    log.info('Update not available. Current:', app.getVersion(), 'Latest:', info.version);
+    log.info('No update. Current:', app.getVersion(), 'Latest:', info.version);
   });
 
   autoUpdater.on('download-progress', (progress) => {
-    log.info('Download progress:', progress.percent);
+    log.info('Download:', progress.percent + '%');
     if (mainWindow) mainWindow.webContents.send('update-progress', Math.round(progress.percent));
   });
 
-  autoUpdater.on('update-downloaded', (info) => {
-    log.info('Update downloaded:', info.version);
+  autoUpdater.on('update-downloaded', () => {
+    log.info('Update downloaded');
     if (mainWindow) mainWindow.webContents.send('update-downloaded');
   });
 
-  autoUpdater.on('error', (err) => {
-    log.error('Updater error:', err);
-  });
+  autoUpdater.on('error', (err) => log.error('Updater error:', err));
 
-  // Check after 5 seconds to make sure page is loaded
+  // Check after 5 seconds
   setTimeout(() => {
     log.info('Starting update check...');
     autoUpdater.checkForUpdates();
   }, 5000);
 }
 
-ipcMain.on('download-update', () => {
-  log.info('User requested download');
-  autoUpdater.downloadUpdate();
-});
-
-ipcMain.on('install-update', () => {
-  log.info('User requested install');
-  autoUpdater.quitAndInstall();
-});
+ipcMain.on('download-update', () => { log.info('Download requested'); autoUpdater.downloadUpdate(); });
+ipcMain.on('install-update', () => { log.info('Install requested'); autoUpdater.quitAndInstall(); });
 
 app.whenReady().then(() => {
   createWindow();
