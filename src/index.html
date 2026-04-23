@@ -206,7 +206,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.0</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.2</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -273,7 +273,10 @@
       <div class="modal-title">Modifier l'entrée</div>
       <div class="form-row"><div class="form-group full"><label>Client</label><select id="e-client-sel" onchange="prefillEditFromClient()"><option value="">— Sélectionner —</option></select></div></div>
       <div class="form-row">
-        <div class="form-group"><label>Date</label><input type="date" id="e-date"/></div>
+        <div class="form-group"><label>Date de début</label><input type="date" id="e-date"/></div>
+        <div class="form-group"><label>Durée (jours)</label><input type="number" id="e-days" value="1" min="1" max="365" inputmode="numeric"/></div>
+      </div>
+      <div class="form-row">
         <div class="form-group"><label>Montant HT (€)</label><input type="number" id="e-ht" step="0.01" min="0" inputmode="decimal"/></div>
       </div>
       <div class="form-row">
@@ -313,10 +316,11 @@
       <div class="form-row"><div class="form-group full"><label>Client</label><select id="f-client-sel" onchange="prefillFromClient()"><option value="">— Sélectionner ou saisir —</option></select></div></div>
       <div class="form-row"><div class="form-group full"><label>Nom libre (si hors base)</label><input type="text" id="f-client-name" placeholder="Ou tape un nom libre"/></div></div>
       <div class="form-row">
-        <div class="form-group"><label>Date de prestation</label><input type="date" id="f-date"/></div>
-        <div class="form-group"><label>Montant HT (€)</label><input type="number" id="f-ht" placeholder="0.00" step="0.01" min="0" inputmode="decimal"/></div>
+        <div class="form-group"><label>Date de début</label><input type="date" id="f-date"/></div>
+        <div class="form-group"><label>Durée (jours)</label><input type="number" id="f-days" value="1" min="1" max="365" inputmode="numeric"/></div>
       </div>
       <div class="form-row">
+        <div class="form-group"><label>Montant HT (€)</label><input type="number" id="f-ht" placeholder="0.00" step="0.01" min="0" inputmode="decimal"/></div>
         <div class="form-group"><label>TVA</label><select id="f-tva"><option value="20">20 % — standard</option><option value="10">10 % — réduit</option><option value="5.5">5,5 % — réduit</option><option value="2.1">2,1 % — super réduit</option><option value="0">0 % — exonéré</option></select></div>
         <div class="form-group"><label>Sous-traitant HT (€)</label><input type="number" id="f-sub" placeholder="0.00" step="0.01" min="0" inputmode="decimal"/></div>
       </div>
@@ -657,7 +661,12 @@ function renderCalendar(){
     const date=new Date(calYear,calMonth,d);
     const isToday=date.getTime()===today.getTime();
     const isSel=selectedDay===dateStr;
-    const dayE=entries.filter(e=>e.date===dateStr&&(!fc||e.clientId==fc));
+    const dayE=entries.filter(e=>{
+      if(fc&&e.clientId!=fc)return false;
+      const eStart=e.date;
+      const eEnd=e.dateEnd||e.date;
+      return dateStr>=eStart&&dateStr<=eEnd;
+    });
     let dh=`<div class="cal-day${isToday?' today':''}${isSel?' selected':''}" onclick="selectDay('${dateStr}')">`;
     const hasST=dayE.some(e=>getSubVal(e)>0);
     dh+=`<div class="cal-day-num">${d}</div>${hasST?'<div class="cal-st-dot"></div>':''}`;
@@ -676,19 +685,23 @@ function renderDayDetail(){
   const container=document.getElementById('day-detail-container');
   if(!selectedDay){container.innerHTML='';return;}
   const fc=document.getElementById('cal-filter-client').value;
-  const dayE=entries.filter(e=>e.date===selectedDay&&(!fc||e.clientId==fc));
+  const dayE=entries.filter(e=>{
+    if(fc&&e.clientId!=fc)return false;
+    const eEnd=e.dateEnd||e.date;
+    return selectedDay>=e.date&&selectedDay<=eEnd;
+  });
   if(!dayE.length){container.innerHTML='';return;}
   const label=new Date(selectedDay+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
   let html='<div class="day-detail"><div class="day-detail-title">'+label+'</div>';
   dayE.forEach(e=>{
     const val=getVal(e),sub=getSubVal(e);
     const isPaye=e.status==='paye';
-    const desc=e.desc?(' — <span style="font-weight:400;color:var(--text3)">'+e.desc+'</span>'):'';
+    const dur=e.days&&e.days>1?' ('+e.days+'j)':'';const desc=e.desc?(' — <span style="font-weight:400;color:var(--text3)">'+e.desc+'</span>'):'';
     const col=isPaye?'var(--emerald-light)':e.status==='valide'?'var(--blue-light)':'var(--amber-light)';
     const lbl=isPaye?'Payé':e.status==='valide'?'Validé':'Option';
     html+='<div class="day-entry-card">'
       +'<div class="day-entry-name">'+getClientName(e)+desc+'</div>'
-      +'<div class="day-entry-amount">'+fmt(val)+(sub>0?' (ST: -'+fmt(sub)+')':'')+' · <span style="color:'+col+'">'+lbl+'</span></div>'
+      +'<div class="day-entry-amount">'+fmt(val)+dur+(sub>0?' (ST: -'+fmt(sub)+')':'')+' · <span style="color:'+col+'">'+lbl+'</span></div>'
       +'<div class="day-entry-actions">'
       +(!isPaye?'<button class="day-btn paid" onclick="markPaid('+e.id+')">✓ Payé</button>':'')
       +(isPaye?'<button class="day-btn unpaid" onclick="markUnpaid('+e.id+')">↩ Impayé</button>':'')
@@ -795,18 +808,20 @@ async function addEntry(){
   const clientName=clientId?'':(document.getElementById('f-client-name').value.trim());
   const displayName=clientId?(clients.find(x=>x.id==clientId)||{}).name:clientName;
   const date=document.getElementById('f-date').value;
+  const days=parseInt(document.getElementById('f-days').value)||1;
   const ht=parseFloat(document.getElementById('f-ht').value);
   const tva=parseFloat(document.getElementById('f-tva').value);
   const sub=parseFloat(document.getElementById('f-sub').value)||0;
   const desc=document.getElementById('f-desc').value.trim();
   const msg=document.getElementById('form-msg');
   if((!clientId&&!clientName)||!date||isNaN(ht)||ht<=0){msg.className='msg err';msg.textContent='Renseigne le client, la date et le montant.';return;}
-  const entry={id:Date.now(),clientId:clientId||null,clientName:displayName,date,
+  const dateEnd=days>1?(() => {const d=new Date(date+'T12:00:00');d.setDate(d.getDate()+days-1);return d.toISOString().slice(0,10);})():date;
+  const entry={id:Date.now(),clientId:clientId||null,clientName:displayName,date,dateEnd,days,
     ht:Math.round(ht*100)/100,tva,ttc:Math.round(ht*(1+tva/100)*100)/100,
     sub:Math.round(sub*100)/100,subTtc:Math.round(sub*(1+tva/100)*100)/100,
     status:selectedStatus,desc};
   entries.push(entry);saveLocal();renderAll();await apiPost('/entries',entry);
-  document.getElementById('f-client-sel').value='';document.getElementById('f-client-name').value='';
+  document.getElementById('f-client-sel').value='';document.getElementById('f-client-name').value='';document.getElementById('f-days').value='1';
   document.getElementById('f-ht').value='';document.getElementById('f-sub').value='';document.getElementById('f-desc').value='';
   msg.className='msg ok';msg.textContent='✓ Entrée ajoutée et synchronisée !';
   setTimeout(()=>{msg.textContent='';},2500);
@@ -816,7 +831,7 @@ function openEditModal(id){
   const e=entries.find(x=>x.id===id);if(!e)return;
   editId=id;refreshClientSelects();
   document.getElementById('e-client-sel').value=e.clientId||'';
-  document.getElementById('e-date').value=e.date;
+  document.getElementById('e-date').value=e.date;document.getElementById('e-days').value=e.days||1;
   document.getElementById('e-ht').value=e.ht;
   document.getElementById('e-tva').value=e.tva;
   document.getElementById('e-sub').value=e.sub||0;
@@ -834,10 +849,13 @@ async function saveEdit(){
   const ht=parseFloat(document.getElementById('e-ht').value);
   const tva=parseFloat(document.getElementById('e-tva').value);
   const sub=parseFloat(document.getElementById('e-sub').value)||0;
+  const edays=parseInt(document.getElementById('e-days').value)||1;
+  const edate=document.getElementById('e-date').value;
+  const edateEnd=edays>1?(() => {const d=new Date(edate+'T12:00:00');d.setDate(d.getDate()+edays-1);return d.toISOString().slice(0,10);})():edate;
   const idx=entries.findIndex(x=>x.id===editId);if(idx===-1)return;
   const wasStatus=entries[idx].status;
   entries[idx]={...entries[idx],clientId:clientId||null,clientName:displayName||entries[idx].clientName,
-    date:document.getElementById('e-date').value,
+    date:edate,dateEnd:edateEnd,days:edays,
     ht:Math.round(ht*100)/100,tva,ttc:Math.round(ht*(1+tva/100)*100)/100,
     sub:Math.round(sub*100)/100,subTtc:Math.round(sub*(1+tva/100)*100)/100,
     desc:document.getElementById('e-desc').value.trim(),
