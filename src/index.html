@@ -230,7 +230,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.6.6</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.6.7</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -1182,7 +1182,7 @@ if("serviceWorker" in navigator){
   });
 }
 
-// ===== ELECTRON AUTO-UPDATER v1.6.6 =====
+// ===== ELECTRON AUTO-UPDATER v1.6.7 =====
 var _updReady = false;
 function updBtn() { if (_updReady) { if (window.electronAPI) window.electronAPI.installUpdate(); } else { if (window.electronAPI) window.electronAPI.downloadUpdate(); } }
 function updDismiss() { document.getElementById('upd-banner').classList.remove('show'); document.querySelector('.app').style.paddingTop = '0'; }
