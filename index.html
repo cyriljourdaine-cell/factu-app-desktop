@@ -218,16 +218,13 @@
       <button class="btn-update" id="upd-btn" onclick="updBtn()">Telecharger</button>
       <button class="btn-update-later" onclick="updDismiss()">Plus tard</button>
     </div>
-    <div class="update-prog" id="upd-prog">
-      <span id="upd-pct">0%</span>
-      <div class="prog-bar-bg"><div class="prog-bar" id="upd-bar"></div></div>
-    </div>
+    <div class="update-prog" id="upd-prog"><span id="upd-pct">0%</span><div class="prog-bar-bg"><div class="prog-bar" id="upd-bar"></div></div></div>
   </div>
 <div class="app">
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.5.2</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.5.4</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -1151,46 +1148,15 @@ if("serviceWorker" in navigator){
   });
 }
 
-// ===== ELECTRON AUTO-UPDATER v1.5.2 =====
+// ===== ELECTRON AUTO-UPDATER v1.5.4 =====
 var _updReady = false;
-function updBtn() {
-  if (_updReady) { if (window.electronAPI) { window.electronAPI.installUpdate(); } }
-  else { if (window.electronAPI) { window.electronAPI.downloadUpdate(); } }
-}
-function updDismiss() {
-  document.getElementById('upd-banner').classList.remove('show');
-  document.querySelector('.app').style.paddingTop = '0';
-}
-function _showBanner() {
-  document.getElementById('upd-banner').classList.add('show');
-  var h = document.getElementById('upd-banner').offsetHeight;
-  document.querySelector('.app').style.paddingTop = h + 'px';
-}
+function updBtn() { if (_updReady) { if (window.electronAPI) window.electronAPI.installUpdate(); } else { if (window.electronAPI) window.electronAPI.downloadUpdate(); } }
+function updDismiss() { document.getElementById('upd-banner').classList.remove('show'); document.querySelector('.app').style.paddingTop = '0'; }
+function _showBanner() { document.getElementById('upd-banner').classList.add('show'); document.querySelector('.app').style.paddingTop = document.getElementById('upd-banner').offsetHeight + 'px'; }
 if (typeof window !== 'undefined' && window.electronAPI) {
-  window.electronAPI.onUpdateAvailable(function(data) {
-    var v = data && data.version ? data.version : '';
-    var n = data && data.releaseNotes ? String(data.releaseNotes).replace(/<[^>]*>/g, '').trim() : 'Ameliorations et corrections.';
-    document.getElementById('upd-title').textContent = (v ? 'Mise a jour v' + v + ' disponible' : 'Mise a jour disponible');
-    document.getElementById('upd-notes').textContent = n;
-    _showBanner();
-  });
-  window.electronAPI.onUpdateProgress(function(pct) {
-    document.getElementById('upd-prog').style.display = 'block';
-    document.getElementById('upd-pct').textContent = pct + '%';
-    document.getElementById('upd-bar').style.width = pct + '%';
-    document.getElementById('upd-btn').disabled = true;
-    document.getElementById('upd-btn').textContent = 'Telechargement...';
-    _showBanner();
-  });
-  window.electronAPI.onUpdateDownloaded(function() {
-    _updReady = true;
-    document.getElementById('upd-title').textContent = 'Mise a jour prete';
-    document.getElementById('upd-notes').textContent = "Cliquez pour installer et relancer l'app.";
-    document.getElementById('upd-prog').style.display = 'none';
-    document.getElementById('upd-btn').disabled = false;
-    document.getElementById('upd-btn').textContent = 'Installer maintenant';
-    _showBanner();
-  });
+  window.electronAPI.onUpdateAvailable(function(data) { var v=data&&data.version?data.version:''; var n=data&&data.releaseNotes?String(data.releaseNotes).replace(/<[^>]*>/g,'').trim():'Ameliorations et corrections.'; document.getElementById('upd-title').textContent=(v?'Mise a jour v'+v+' disponible':'Mise a jour disponible'); document.getElementById('upd-notes').textContent=n; _showBanner(); });
+  window.electronAPI.onUpdateProgress(function(pct) { document.getElementById('upd-prog').style.display='block'; document.getElementById('upd-pct').textContent=pct+'%'; document.getElementById('upd-bar').style.width=pct+'%'; document.getElementById('upd-btn').disabled=true; document.getElementById('upd-btn').textContent='Telechargement...'; _showBanner(); });
+  window.electronAPI.onUpdateDownloaded(function() { _updReady=true; document.getElementById('upd-title').textContent='Mise a jour prete'; document.getElementById('upd-notes').textContent="Cliquez pour installer."; document.getElementById('upd-prog').style.display='none'; document.getElementById('upd-btn').disabled=false; document.getElementById('upd-btn').textContent='Installer maintenant'; _showBanner(); });
 }
 // ===== END ELECTRON AUTO-UPDATER =====
 </script>
