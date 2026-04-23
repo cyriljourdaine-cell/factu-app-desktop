@@ -184,6 +184,18 @@
     .conn-status { padding: 9px 11px; background: var(--bg3); border-radius: var(--radius); font-size: 12px; color: var(--text2); margin-top: 8px; display: none; }
 
     /* Modal */
+
+    /* Update banner */
+    .update-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: #1e293b; border-bottom: 1px solid rgba(59,130,246,0.4); padding: 12px 16px; display: none; max-width: 680px; margin: 0 auto; }
+    .update-banner.show { display: block; }
+    .update-title { font-size: 13px; font-weight: 700; color: var(--blue-light); margin-bottom: 3px; }
+    .update-notes { font-size: 11px; color: var(--text2); margin-bottom: 10px; line-height: 1.4; max-height: 60px; overflow-y: auto; }
+    .update-actions { display: flex; gap: 8px; }
+    .btn-update { height: 32px; background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 0 14px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-update-dismiss { height: 32px; background: var(--bg3); color: var(--text2); border: none; border-radius: 8px; padding: 0 14px; font-size: 12px; cursor: pointer; }
+    .update-progress { font-size: 11px; color: var(--blue-light); margin-top: 6px; display: none; }
+    .progress-bar-wrap { height: 4px; background: var(--bg3); border-radius: 2px; margin-top: 4px; }
+    .progress-bar { height: 4px; background: var(--blue); border-radius: 2px; width: 0%; transition: width 0.3s; }
     .period-preset-btn { height: 38px; background: var(--bg3); border: 0.5px solid var(--border2); color: var(--text2); border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer; }
     .period-preset-btn:hover { background: var(--blue-bg); border-color: var(--blue); color: var(--blue-light); }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
@@ -197,6 +209,21 @@
   </style>
 </head>
 <body>
+
+  <!-- Update banner (Electron only) -->
+  <div class="update-banner" id="update-banner">
+    <div class="update-title" id="update-title">🆕 Mise à jour disponible</div>
+    <div class="update-notes" id="update-notes"></div>
+    <div class="update-actions">
+      <button class="btn-update" id="btn-update-action" onclick="handleUpdateBtn()">Télécharger</button>
+      <button class="btn-update-dismiss" onclick="dismissUpdate()">Plus tard</button>
+    </div>
+    <div class="update-progress" id="update-progress-wrap">
+      <span id="update-pct">0%</span>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+    </div>
+  </div>
+
 <div class="app">
   <header>
     <div class="header-top">
@@ -1081,6 +1108,56 @@ document.getElementById('f-date').valueAsDate=new Date();
 document.getElementById('year-display').textContent=currentYear;updatePeriodDisplay();
 loadConfig();loadPeriodConfig();loadLocal();refreshClientSelects();renderAll();
 if(apiUrl&&apiSecret)pullFromNas();
+
+
+// ── Electron auto-updater ──
+let updateReady = false;
+
+if (window.electronAPI) {
+  window.electronAPI.onUpdateAvailable((data) => {
+    document.getElementById('update-title').textContent = '🆕 Mise à jour v' + data.version + ' disponible';
+    // Strip HTML tags from release notes
+    const notes = typeof data.releaseNotes === 'string'
+      ? data.releaseNotes.replace(/<[^>]*>/g, '').trim()
+      : 'Améliorations et corrections.';
+    document.getElementById('update-notes').textContent = notes;
+    document.getElementById('update-banner').classList.add('show');
+    // Push app content down
+    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
+  });
+
+  window.electronAPI.onUpdateProgress((pct) => {
+    document.getElementById('update-progress-wrap').style.display = 'block';
+    document.getElementById('update-pct').textContent = pct + '%';
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('btn-update-action').disabled = true;
+    document.getElementById('btn-update-action').textContent = 'Téléchargement...';
+    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
+  });
+
+  window.electronAPI.onUpdateDownloaded(() => {
+    updateReady = true;
+    document.getElementById('update-title').textContent = '✅ Mise à jour prête à installer';
+    document.getElementById('update-notes').textContent = 'L'app va se relancer automatiquement.';
+    document.getElementById('update-progress-wrap').style.display = 'none';
+    document.getElementById('btn-update-action').disabled = false;
+    document.getElementById('btn-update-action').textContent = 'Installer maintenant';
+    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
+  });
+}
+
+function handleUpdateBtn() {
+  if (updateReady) {
+    window.electronAPI.installUpdate();
+  } else {
+    window.electronAPI.downloadUpdate();
+  }
+}
+
+function dismissUpdate() {
+  document.getElementById('update-banner').classList.remove('show');
+  document.querySelector('.app').style.marginTop = '0';
+}
 
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("./sw.js").then(reg=>{
