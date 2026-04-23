@@ -224,7 +224,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.5.7</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.5.9</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -252,7 +252,7 @@
     <div class="metric metric-paye"><div class="metric-label">Payé (CA)</div><div class="metric-value emerald" id="m-paye">0 €</div></div>
     <div class="metric"><div class="metric-label">Option</div><div class="metric-value amber" id="m-option">0 €</div></div>
     <div class="metric"><div class="metric-label">ST Option</div><div class="metric-value red" id="m-st-option">0 €</div></div>
-    <div class="metric"><div class="metric-label">Net + Opt.</div><div class="metric-value green" id="m-net-opt">0 €</div></div>
+    <div class="metric"><div class="metric-label">Net + Opt.</div><div class="metric-value amber" id="m-net-opt">0 €</div></div>
   </div>
 
   <div class="chart-section">
@@ -1148,7 +1148,7 @@ if("serviceWorker" in navigator){
   });
 }
 
-// ===== ELECTRON AUTO-UPDATER v1.5.7 =====
+// ===== ELECTRON AUTO-UPDATER v1.5.9 =====
 var _updReady = false;
 function updBtn() { if (_updReady) { if (window.electronAPI) window.electronAPI.installUpdate(); } else { if (window.electronAPI) window.electronAPI.downloadUpdate(); } }
 function updDismiss() { document.getElementById('upd-banner').classList.remove('show'); document.querySelector('.app').style.paddingTop = '0'; }
