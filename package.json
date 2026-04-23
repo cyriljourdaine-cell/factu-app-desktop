@@ -1,6 +1,6 @@
 {
   "name": "factu-app",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "Facturation - Jour And Light",
   "main": "src/main.js",
   "scripts": {
@@ -13,11 +13,16 @@
     "publish": {
       "provider": "github",
       "owner": "cyriljourdaine-cell",
-      "repo": "factu-app-desktop"
+      "repo": "factu-app-desktop",
+      "releaseType": "release"
     },
     "win": {
-      "target": "nsis",
-      "icon": "src/icon.ico"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
     },
     "nsis": {
       "oneClick": false,
