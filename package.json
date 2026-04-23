@@ -1,6 +1,6 @@
 {
   "name": "factu-app",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "description": "Facturation - Jour And Light",
   "main": "src/main.js",
   "scripts": {

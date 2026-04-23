@@ -230,7 +230,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.6.5</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.6.6</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -843,7 +843,7 @@ function renderDayDetail(){
     const val=getVal(e),sub=getSubVal(e);
     const isPaye=e.status==='paye';
     html+=`<div class="day-entry-card">
-      <div class="day-entry-name">${getClientName(e)}${e.desc?` — <span style="font-weight:400;color:var(--text3)">${e.desc}</span>`:''}</div>
+      <div class="day-entry-name">${getClientName(e)}${e.desc?' — <span style="font-weight:400;color:var(--text3)">'+e.desc+'</span>':''}</div>
       <div class="day-entry-amount">${fmt(val)}${sub>0?' (ST: -'+fmt(sub)+')':''} · <span style="color:${isPaye?'var(--emerald-light)':e.status==='valide'?'var(--blue-light)':'var(--amber-light)'}">${isPaye?'Payé':e.status==='valide'?'Validé':'Option'}</span></div>
       <div class="day-entry-actions">
         ${!isPaye?`<button class="day-btn paid" onclick="markPaid(${e.id})">✓ Payé</button>`:''}
@@ -1182,7 +1182,7 @@ if("serviceWorker" in navigator){
   });
 }
 
-// ===== ELECTRON AUTO-UPDATER v1.6.5 =====
+// ===== ELECTRON AUTO-UPDATER v1.6.6 =====
 var _updReady = false;
 function updBtn() { if (_updReady) { if (window.electronAPI) window.electronAPI.installUpdate(); } else { if (window.electronAPI) window.electronAPI.downloadUpdate(); } }
 function updDismiss() { document.getElementById('upd-banner').classList.remove('show'); document.querySelector('.app').style.paddingTop = '0'; }
