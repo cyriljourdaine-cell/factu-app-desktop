@@ -1110,47 +1110,14 @@ loadConfig();loadPeriodConfig();loadLocal();refreshClientSelects();renderAll();
 if(apiUrl&&apiSecret)pullFromNas();
 
 
-// ── Electron auto-updater ──
-let updateReady = false;
-
-if (window.electronAPI) {
-  window.electronAPI.onUpdateAvailable((data) => {
-    document.getElementById('update-title').textContent = '🆕 Mise à jour v' + data.version + ' disponible';
-    // Strip HTML tags from release notes
-    const notes = typeof data.releaseNotes === 'string'
-      ? data.releaseNotes.replace(/<[^>]*>/g, '').trim()
-      : 'Améliorations et corrections.';
-    document.getElementById('update-notes').textContent = notes;
-    document.getElementById('update-banner').classList.add('show');
-    // Push app content down
-    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
-  });
-
-  window.electronAPI.onUpdateProgress((pct) => {
-    document.getElementById('update-progress-wrap').style.display = 'block';
-    document.getElementById('update-pct').textContent = pct + '%';
-    document.getElementById('progress-bar').style.width = pct + '%';
-    document.getElementById('btn-update-action').disabled = true;
-    document.getElementById('btn-update-action').textContent = 'Téléchargement...';
-    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
-  });
-
-  window.electronAPI.onUpdateDownloaded(() => {
-    updateReady = true;
-    document.getElementById('update-title').textContent = '✅ Mise à jour prête à installer';
-    document.getElementById('update-notes').textContent = 'L'app va se relancer automatiquement.';
-    document.getElementById('update-progress-wrap').style.display = 'none';
-    document.getElementById('btn-update-action').disabled = false;
-    document.getElementById('btn-update-action').textContent = 'Installer maintenant';
-    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
-  });
-}
+// Electron auto-updater
+var updateReady = false;
 
 function handleUpdateBtn() {
   if (updateReady) {
-    window.electronAPI.installUpdate();
+    if (window.electronAPI) window.electronAPI.installUpdate();
   } else {
-    window.electronAPI.downloadUpdate();
+    if (window.electronAPI) window.electronAPI.downloadUpdate();
   }
 }
 
@@ -1158,6 +1125,37 @@ function dismissUpdate() {
   document.getElementById('update-banner').classList.remove('show');
   document.querySelector('.app').style.marginTop = '0';
 }
+
+if (window.electronAPI) {
+  window.electronAPI.onUpdateAvailable(function(data) {
+    document.getElementById('update-title').textContent = 'Mise a jour v' + data.version + ' disponible';
+    var notes = data.releaseNotes || 'Ameliorations et corrections.';
+    if (typeof notes === 'string') notes = notes.replace(/<[^>]*>/g, '').trim();
+    document.getElementById('update-notes').textContent = notes;
+    document.getElementById('update-banner').classList.add('show');
+    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
+  });
+
+  window.electronAPI.onUpdateProgress(function(pct) {
+    document.getElementById('update-progress-wrap').style.display = 'block';
+    document.getElementById('update-pct').textContent = pct + '%';
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('btn-update-action').disabled = true;
+    document.getElementById('btn-update-action').textContent = 'Telechargement...';
+    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
+  });
+
+  window.electronAPI.onUpdateDownloaded(function() {
+    updateReady = true;
+    document.getElementById('update-title').textContent = 'Mise a jour prete a installer';
+    document.getElementById('update-notes').textContent = "L'app va se relancer automatiquement.";
+    document.getElementById('update-progress-wrap').style.display = 'none';
+    document.getElementById('btn-update-action').disabled = false;
+    document.getElementById('btn-update-action').textContent = 'Installer maintenant';
+    document.querySelector('.app').style.marginTop = document.getElementById('update-banner').offsetHeight + 'px';
+  });
+}
+
 
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("./sw.js").then(reg=>{

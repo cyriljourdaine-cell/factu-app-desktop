@@ -1,6 +1,6 @@
 {
   "name": "factu-app",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Facturation - Jour And Light",
   "main": "src/main.js",
   "scripts": {
@@ -20,7 +20,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
