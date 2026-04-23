@@ -222,7 +222,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.6.8</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.6.9</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -619,7 +619,7 @@ function saveFiscalRange(){
   setTimeout(()=>{document.getElementById('def-period-status').textContent='';},3000);
 }
 
-function setDefaultPeriod(type){
+function setDefaultPeriod(type){ try {
   const year=new Date().getFullYear();
   if(type==='calendar'){
     periodMode='calendar'; currentYear=year;
@@ -645,7 +645,7 @@ function setDefaultPeriod(type){
   updatePeriodDisplay(); updateDashboard();
   updateDefaultPeriodUI(type);
   setTimeout(()=>{document.getElementById('def-period-status').textContent='';},3000);
-}
+} catch(e){ console.warn('setDefaultPeriod error:', e); } }
 
 function updateDefaultPeriodUI(type){
   try{
