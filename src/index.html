@@ -230,7 +230,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.6.2</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.6.4</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -859,7 +859,7 @@ function renderDayDetail(){
 
 // ── Payé panel ──
 function renderPaye(){
-  const yr=entries.filter(e=>e.status==='paye'&&new Date(e.date).getFullYear()===currentYear);
+  const yr=getFilteredEntries().filter(e=>e.status===_listeTab);
   const total=yr.reduce((a,e)=>a+getVal(e),0);
   document.getElementById('paye-year').textContent=periodMode==='custom'&&periodStart&&periodEnd?periodStart.toLocaleDateString('fr-FR')+' — '+periodEnd.toLocaleDateString('fr-FR'):currentYear;
   document.getElementById('paye-total').textContent=fmt(total);
@@ -1164,7 +1164,7 @@ if("serviceWorker" in navigator){
   });
 }
 
-// ===== ELECTRON AUTO-UPDATER v1.6.2 =====
+// ===== ELECTRON AUTO-UPDATER v1.6.4 =====
 var _updReady = false;
 function updBtn() { if (_updReady) { if (window.electronAPI) window.electronAPI.installUpdate(); } else { if (window.electronAPI) window.electronAPI.downloadUpdate(); } }
 function updDismiss() { document.getElementById('upd-banner').classList.remove('show'); document.querySelector('.app').style.paddingTop = '0'; }
