@@ -1,6 +1,12 @@
 const { app, BrowserWindow, shell, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
+const log = require('electron-log');
+
+// Configure logging
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
 
 let mainWindow;
 
@@ -22,7 +28,6 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
-  // Inject app version into the page once loaded
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.webContents.executeJavaScript(
       `document.getElementById('app-version').textContent = 'v${app.getVersion()}';`
@@ -39,32 +44,51 @@ function setupUpdater() {
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
 
+  autoUpdater.on('checking-for-update', () => {
+    log.info('Checking for update...');
+  });
+
   autoUpdater.on('update-available', (info) => {
+    log.info('Update available:', info.version);
     mainWindow.webContents.send('update-available', {
       version: info.version,
       releaseNotes: info.releaseNotes || 'Ameliorations et corrections.'
     });
   });
 
+  autoUpdater.on('update-not-available', (info) => {
+    log.info('Update not available. Current:', app.getVersion(), 'Latest:', info.version);
+  });
+
   autoUpdater.on('download-progress', (progress) => {
+    log.info('Download progress:', progress.percent);
     mainWindow.webContents.send('update-progress', Math.round(progress.percent));
   });
 
-  autoUpdater.on('update-downloaded', () => {
+  autoUpdater.on('update-downloaded', (info) => {
+    log.info('Update downloaded:', info.version);
     mainWindow.webContents.send('update-downloaded');
   });
 
   autoUpdater.on('error', (err) => {
-    console.error('Updater error:', err);
+    log.error('Updater error:', err);
   });
 
   setTimeout(() => {
+    log.info('Starting update check...');
     autoUpdater.checkForUpdates();
   }, 3000);
 }
 
-ipcMain.on('download-update', () => { autoUpdater.downloadUpdate(); });
-ipcMain.on('install-update', () => { autoUpdater.quitAndInstall(); });
+ipcMain.on('download-update', () => {
+  log.info('User requested download');
+  autoUpdater.downloadUpdate();
+});
+
+ipcMain.on('install-update', () => {
+  log.info('User requested install');
+  autoUpdater.quitAndInstall();
+});
 
 app.whenReady().then(() => {
   createWindow();
