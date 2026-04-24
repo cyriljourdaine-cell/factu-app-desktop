@@ -180,6 +180,12 @@
     .modal-btns button { height: 44px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
     .btn-cancel { background: var(--bg3); color: var(--text2); }
     .btn-confirm { background: var(--blue); color: #fff; }
+
+    .form-offline { position: relative; }
+    .form-offline-overlay { display: none; position: absolute; inset: 0; background: rgba(15,23,42,0.85); border-radius: var(--radius); z-index: 10; align-items: center; justify-content: center; flex-direction: column; gap: 8px; }
+    .form-offline-overlay.show { display: flex; }
+    .form-offline-msg { font-size: 13px; font-weight: 600; color: var(--text2); text-align: center; }
+    .form-offline-icon { font-size: 2rem; }
     .update-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: #1e293b; border-bottom: 1px solid rgba(59,130,246,0.4); padding: 12px 16px; display: none; }
     .update-banner.show { display: block; }
     .update-header { font-size: 13px; font-weight: 700; color: #93c5fd; margin-bottom: 3px; }
@@ -206,7 +212,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.2</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.4</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -313,6 +319,10 @@
 
   <div class="panels">
     <div class="panel active" id="panel-add">
+      <div class="form-offline-overlay" id="offline-overlay">
+        <div class="form-offline-icon">🔌</div>
+        <div class="form-offline-msg">Non connecté au serveur<br><span style="font-size:11px;color:var(--text3);">Connecte-toi dans les Réglages pour saisir des entrées</span></div>
+      </div>
       <div class="form-row"><div class="form-group full"><label>Client</label><select id="f-client-sel" onchange="prefillFromClient()"><option value="">— Sélectionner ou saisir —</option></select></div></div>
       <div class="form-row"><div class="form-group full"><label>Nom libre (si hors base)</label><input type="text" id="f-client-name" placeholder="Ou tape un nom libre"/></div></div>
       <div class="form-row">
@@ -563,7 +573,15 @@ async function apiDelete(path){if(!apiUrl||!apiSecret)return;try{await fetch(api
 
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(entries));localStorage.setItem(CLI_KEY,JSON.stringify(clients));}catch(e){}}
 function loadLocal(){try{const d=localStorage.getItem(KEY);if(d)entries=JSON.parse(d);const c=localStorage.getItem(CLI_KEY);if(c)clients=JSON.parse(c);}catch(e){}}
-function setSyncStatus(s,l){document.getElementById('sync-dot').className='sync-dot '+s;document.getElementById('sync-label').textContent=l;}
+function setSyncStatus(s,l){
+  document.getElementById('sync-dot').className='sync-dot '+s;
+  document.getElementById('sync-label').textContent=l;
+  const overlay=document.getElementById('offline-overlay');
+  if(overlay){
+    if(s==='ok'){overlay.classList.remove('show');}
+    else if(s==='err'){overlay.classList.add('show');}
+  }
+}
 
 function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -804,6 +822,7 @@ function getClientName(entry){
 }
 
 async function addEntry(){
+  if(!apiUrl||!apiSecret){document.getElementById('form-msg').className='msg err';document.getElementById('form-msg').textContent='Connexion au serveur requise pour saisir une entrée.';return;}
   const clientId=document.getElementById('f-client-sel').value;
   const clientName=clientId?'':(document.getElementById('f-client-name').value.trim());
   const displayName=clientId?(clients.find(x=>x.id==clientId)||{}).name:clientName;
@@ -998,6 +1017,18 @@ document.getElementById('f-date').valueAsDate=new Date();
 document.getElementById('year-display').textContent=currentYear;updatePeriodDisplay();
 loadConfig();loadPeriodConfig();loadLocal();refreshClientSelects();renderAll();
 if(apiUrl&&apiSecret)pullFromNas();
+
+// Vérification périodique de la connexion toutes les 30 secondes
+setInterval(async function(){
+  if(!apiUrl||!apiSecret)return;
+  try{
+    const r=await fetch(apiUrl+'/health',{headers:hdrs(),signal:AbortSignal.timeout(5000)});
+    if(r.ok)setSyncStatus('ok','Synchronisé');
+    else setSyncStatus('err','Hors ligne');
+  }catch(e){
+    setSyncStatus('err','Hors ligne');
+  }
+}, 30000);
 
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("./sw.js").then(reg=>{
