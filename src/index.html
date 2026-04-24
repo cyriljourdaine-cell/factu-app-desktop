@@ -209,7 +209,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.5</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.6</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -1016,19 +1016,23 @@ function renderAll(){
 document.getElementById('f-date').valueAsDate=new Date();
 document.getElementById('year-display').textContent=currentYear;updatePeriodDisplay();
 loadConfig();loadPeriodConfig();loadLocal();refreshClientSelects();renderAll();
-if(apiUrl&&apiSecret)pullFromNas();
+if(apiUrl&&apiSecret){pullFromNas();}else{setSyncStatus('err','Non connecté');}
 
 // Vérification périodique de la connexion toutes les 30 secondes
 setInterval(async function(){
   if(!apiUrl||!apiSecret)return;
   try{
-    const r=await fetch(apiUrl+'/health',{headers:hdrs(),signal:AbortSignal.timeout(5000)});
+    const r=await fetch(apiUrl+'/health',{
+      headers:hdrs(),
+      cache:'no-store',
+      signal:AbortSignal.timeout(5000)
+    });
     if(r.ok)setSyncStatus('ok','Synchronisé');
     else setSyncStatus('err','Hors ligne');
   }catch(e){
     setSyncStatus('err','Hors ligne');
   }
-}, 30000);
+}, 10000);
 
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("./sw.js").then(reg=>{
