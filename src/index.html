@@ -181,11 +181,8 @@
     .btn-cancel { background: var(--bg3); color: var(--text2); }
     .btn-confirm { background: var(--blue); color: #fff; }
 
-    .form-offline { position: relative; }
-    .form-offline-overlay { display: none; position: absolute; inset: 0; background: rgba(15,23,42,0.85); border-radius: var(--radius); z-index: 10; align-items: center; justify-content: center; flex-direction: column; gap: 8px; }
-    .form-offline-overlay.show { display: flex; }
-    .form-offline-msg { font-size: 13px; font-weight: 600; color: var(--text2); text-align: center; }
-    .form-offline-icon { font-size: 2rem; }
+    .offline-banner { display: none; background: var(--red-bg); border: 0.5px solid rgba(239,68,68,0.3); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 10px; font-size: 12px; color: var(--red-light); text-align: center; }
+    .offline-banner.show { display: block; }
     .update-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: #1e293b; border-bottom: 1px solid rgba(59,130,246,0.4); padding: 12px 16px; display: none; }
     .update-banner.show { display: block; }
     .update-header { font-size: 13px; font-weight: 700; color: #93c5fd; margin-bottom: 3px; }
@@ -212,7 +209,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.4</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.5</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -319,10 +316,7 @@
 
   <div class="panels">
     <div class="panel active" id="panel-add">
-      <div class="form-offline-overlay" id="offline-overlay">
-        <div class="form-offline-icon">🔌</div>
-        <div class="form-offline-msg">Non connecté au serveur<br><span style="font-size:11px;color:var(--text3);">Connecte-toi dans les Réglages pour saisir des entrées</span></div>
-      </div>
+      <div class="offline-banner" id="offline-banner">🔌 Non connecté au serveur — Configure la connexion dans les Réglages pour saisir des entrées.</div>
       <div class="form-row"><div class="form-group full"><label>Client</label><select id="f-client-sel" onchange="prefillFromClient()"><option value="">— Sélectionner ou saisir —</option></select></div></div>
       <div class="form-row"><div class="form-group full"><label>Nom libre (si hors base)</label><input type="text" id="f-client-name" placeholder="Ou tape un nom libre"/></div></div>
       <div class="form-row">
@@ -339,7 +333,7 @@
         <button class="status-btn sel-valide" id="btn-valide" onclick="selectStatus('valide')">✓ Validé</button>
         <button class="status-btn" id="btn-option" onclick="selectStatus('option')">◇ En option</button>
       </div>
-      <button class="btn-submit" onclick="addEntry()">Ajouter cette entrée</button>
+      <button class="btn-submit" id="btn-submit-add" onclick="addEntry()">Ajouter cette entrée</button>
       <div class="msg" id="form-msg"></div>
     </div>
 
@@ -576,10 +570,16 @@ function loadLocal(){try{const d=localStorage.getItem(KEY);if(d)entries=JSON.par
 function setSyncStatus(s,l){
   document.getElementById('sync-dot').className='sync-dot '+s;
   document.getElementById('sync-label').textContent=l;
-  const overlay=document.getElementById('offline-overlay');
-  if(overlay){
-    if(s==='ok'){overlay.classList.remove('show');}
-    else if(s==='err'){overlay.classList.add('show');}
+  const banner=document.getElementById('offline-banner');
+  const btn=document.getElementById('btn-submit-add');
+  if(banner){
+    if(s==='ok'){
+      banner.classList.remove('show');
+      if(btn){btn.disabled=false;btn.style.opacity='1';}
+    } else if(s==='err'){
+      banner.classList.add('show');
+      if(btn){btn.disabled=true;btn.style.opacity='0.4';}
+    }
   }
 }
 
