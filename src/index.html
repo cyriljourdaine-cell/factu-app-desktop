@@ -107,7 +107,7 @@
     .cal-entry.option { background: var(--amber-bg); color: var(--amber-light); }
     .cal-entry.paye { background: var(--emerald-bg); color: var(--emerald-light); }
     .cal-more { font-size: 8px; color: var(--text3); }
-    .cal-st-dot { position: absolute; top: 3px; right: 3px; width: 5px; height: 5px; border-radius: 50%; background: #ef4444; }
+    .cal-entry-st-dot { position: absolute; top: 1px; right: 2px; width: 5px; height: 5px; border-radius: 50%; background: #ef4444; display: inline-block; }
     .cal-legend { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
     .cal-legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text2); }
     .cal-legend-dot { width: 8px; height: 8px; border-radius: 2px; }
@@ -211,7 +211,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.9</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.8.0</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -345,6 +345,7 @@
           <button class="cal-btn" onclick="calNav(-1)">←</button>
           <button class="cal-btn" onclick="calToday()">Auj.</button>
           <button class="cal-btn" onclick="calNav(1)">→</button>
+          <button class="cal-btn" onclick="showPanel('add')" style="background:var(--blue);color:#fff;border-color:var(--blue);">+ Entrée</button>
         </div>
       </div>
       <div class="cal-filter"><select id="cal-filter-client" onchange="renderCalendar()"><option value="">Tous les clients</option></select></div>
@@ -392,7 +393,7 @@
       <div class="settings-section">
         <div class="settings-title">Connexion NAS Synology</div>
         <div class="settings-card">
-          <p>Entre l'adresse de ton NAS et le mot de passe pour activer la synchronisation automatique.</p>
+          <p>Entre l'adresse du serveur et ton mot de passe pour activer la synchronisation automatique.</p>
           <div class="field-row"><label>URL de l'API</label><input type="url" id="s-url" placeholder="https://votre-nas.synology.me:3002"/></div>
           <div class="field-row"><label>Mot de passe secret</label><input type="password" id="s-secret" placeholder="••••••••"/></div>
           <button class="btn-save" onclick="saveConfig()">Enregistrer et tester la connexion</button>
@@ -687,9 +688,11 @@ function renderCalendar(){
       return dateStr>=eStart&&dateStr<=eEnd;
     });
     let dh=`<div class="cal-day${isToday?' today':''}${isSel?' selected':''}" onclick="selectDay('${dateStr}')">`;
-    const hasST=dayE.some(e=>getSubVal(e)>0);
-    dh+=`<div class="cal-day-num">${d}</div>${hasST?'<div class="cal-st-dot"></div>':''}`;
-    dayE.slice(0,2).forEach(e=>{dh+=`<div class="cal-entry ${e.status}">${getClientName(e)}</div>`;});
+    dh+=`<div class="cal-day-num">${d}</div>`;
+    dayE.slice(0,2).forEach(e=>{
+      const hasST=getSubVal(e)>0;
+      dh+=`<div class="cal-entry ${e.status}" style="position:relative;">${getClientName(e)}${hasST?'<span class="cal-entry-st-dot"></span>':''}</div>`;
+    });
     if(dayE.length>2)dh+=`<div class="cal-more">+${dayE.length-2}</div>`;
     dh+='</div>';html+=dh;
   }
