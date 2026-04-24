@@ -211,7 +211,7 @@
   <header>
     <div class="header-top">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.8</span></div>
+        <div class="logo">factu<span class="accent">.</span>app <span class="ver" id="app-version">v1.7.9</span></div>
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">Non connecté</span>
@@ -974,6 +974,7 @@ function updateDashboard(){
       {type:'line',label:'Net val.',data:dataNetV,borderColor:'#5eead4',borderWidth:2,pointRadius:2,pointBackgroundColor:'#5eead4',tension:0.3,fill:false,order:1}
     ]},
     options:{responsive:true,maintainAspectRatio:false,
+      animation:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)}}},
       scales:{x:{grid:{display:false},ticks:{color:'#64748b',font:{size:9}}},
         y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#64748b',callback:v=>fmt(v),font:{size:9}}}}}
@@ -999,6 +1000,7 @@ function renderStats(){
   pieChart=new Chart(document.getElementById('pieChart'),{type:'doughnut',
     data:{labels:sorted.map(x=>x[0]),datasets:[{data:sorted.map(x=>x[1]),backgroundColor:colors,borderColor:'#0f172a',borderWidth:2,hoverOffset:6}]},
     options:{responsive:true,maintainAspectRatio:false,
+      animation:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label} : ${fmt(ctx.raw)} (${total?Math.round(ctx.raw/total*100):0}%)`}}}}
   });
   const tbody=document.getElementById('stats-table-body');
@@ -1020,6 +1022,12 @@ if(apiUrl&&apiSecret){pullFromNas();}else{setSyncStatus('err','Non connecté');}
 
 // Vérification périodique de la connexion toutes les 30 secondes
 setInterval(async function(){
+  // Vérifier les MAJ du Service Worker
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistration().then(function(reg){
+      if(reg) reg.update();
+    });
+  }
   if(!apiUrl||!apiSecret)return;
   try{
     const r=await fetch(apiUrl+'/health',{
@@ -1029,7 +1037,6 @@ setInterval(async function(){
     });
     if(r.ok){
       setSyncStatus('ok','Synchronisé');
-      // Rafraîchir les données depuis le NAS
       await pullFromNas();
     } else {
       setSyncStatus('err','Hors ligne');
@@ -1045,7 +1052,11 @@ if("serviceWorker" in navigator){
     setInterval(()=>reg.update(),30000);
   });
   navigator.serviceWorker.addEventListener("message",e=>{
-    if(e.data&&e.data.type==="NEW_VERSION")document.getElementById("app-version").textContent="v"+e.data.version;
+    if(e.data&&e.data.type==="NEW_VERSION"){
+      document.getElementById("app-version").textContent="v"+e.data.version;
+      // Recharger les données sans recharger la page
+      loadLocal();renderAll();
+    }
   });
 }
 
